@@ -4,13 +4,22 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <!-- Apenas para o ícone na bandeja (NotifyIcon). -->
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>WinTune.App</RootNamespace>
     <AssemblyName>WinTune</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Aplicativo (não biblioteca): XML docs opcionais em code-behind. -->
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- WFAC010: analisador do WinForms sobre DPI no manifest; não se aplica a apps WPF (o WPF usa o manifest para DPI). -->
+    <NoWarn>$(NoWarn);CS1591;WFAC010</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Evita ambiguidade WPF × WinForms (Application, MessageBox...). -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" />

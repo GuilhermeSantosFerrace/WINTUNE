@@ -52,6 +52,17 @@ public partial class App : Application
         var vm = new MainViewModel(services, dialogs, _loggerFactory.CreateLogger<MainViewModel>());
         var window = new MainWindow { DataContext = vm };
         MainWindow = window;
+
+        _tray = new TrayIcon(window, () => vm.Profiles.IsGameModeEnabled = false);
+        vm.Profiles.GameModeEnabledChanged += (_, on) => _tray.SetVisible(on);
+        vm.Profiles.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName == nameof(ProfilesViewModel.GameModeStatus))
+            {
+                _tray.SetStatus("WinTune — " + vm.Profiles.GameModeStatus);
+            }
+        };
+
         window.Show();
 
         foreach (var warning in startupWarnings)
@@ -59,10 +70,15 @@ public partial class App : Application
             vm.AddLog(warning);
             dialogs.Inform("WinTune", warning);
         }
+
+        _ = vm.Profiles.InitializeAsync();
     }
+
+    private TrayIcon? _tray;
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _tray?.Dispose();
         _loggerFactory?.Dispose();
         if (_mutex is not null)
         {
@@ -114,11 +130,19 @@ public partial class App : Application
         }
 
         var catalog = new TweakCatalog(registry, runner);
+        var games = Core.Games.GamesConfigLoader.Load(fs, Core.Games.GamesConfigLoader.DefaultPath(env));
+        if (games.Warning is not null)
+        {
+            warnings.Add(games.Warning);
+        }
+
         var tasks = new ScheduledTasks();
         var serviceControl = new ServiceControl(wmi, registry);
         var usage = new Platform.Sensors.ProcessUsageReader(wmi);
         return new AppServices
         {
+            Games = games.Games,
+            KnownBackgroundProcesses = games.KnownBackgroundProcesses,
             Startup = new Core.Startup.StartupManager(registry, fs, env, tasks),
             ServiceAuditor = new Core.Services.ServiceAuditor(serviceControl, tasks, fs, env, usage),
             SensorsFactory = () => new Platform.Sensors.UserModeSensors(wmi),

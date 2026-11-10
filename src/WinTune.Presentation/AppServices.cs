@@ -52,6 +52,9 @@ public sealed class AppServices
     /// <summary>Uso por processo (consumidores em segundo plano).</summary>
     public IProcessUsageReader? ProcessUsage { get; init; }
 
+    /// <summary>Overlays/apps conhecidos (do <c>games.json</c>).</summary>
+    public IReadOnlyDictionary<string, string>? KnownBackgroundProcesses { get; set; }
+
     /// <summary>Gerenciador de inicialização.</summary>
     public StartupManager? Startup { get; init; }
 

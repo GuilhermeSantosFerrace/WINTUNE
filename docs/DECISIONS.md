@@ -269,3 +269,21 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **IDs:** `service-manual:<nome>` (reconstrução só aceita nomes da allowlist em código) e `task-disable:<hash do caminho>`
   (reconstrução só entre tarefas existentes que casam com a allowlist).
 - **Verificação real (somente leitura):** 323 serviços auditados; nenhum serviço da Microsoft aparece como alterável.
+
+## D-031 — Modo jogo automático e `games.json`
+
+- **Fase:** 12
+- **`games.json`** (`%APPDATA%\WinTune\games.json`): criado com os padrões na primeira execução; validado ao carregar (schema 1,
+  até 256 KB, só `RainbowSixSiege`/`Cs2`, nomes de processo `^[A-Za-z0-9_.\- ]{1,64}$`, até 10 por jogo, executável relativo
+  sem `..`). Arquivo inválido **nunca é sobrescrito**: o app usa os padrões e avisa. O usuário pode, por exemplo, adicionar
+  `RainbowSix_BE.exe` depois de conferir na instalação (V4).
+- **Detecção:** só pela lista de nomes de processo (snapshot do sistema). Nada é lido do processo do jogo.
+- **Ao abrir o jogo:** grava a intenção (`gamemode-state.json`) antes de agir, aplica os ajustes do perfil do jogo (padrão:
+  `power-high`, o `game-profile-power` da seção 4.4) usando os mesmos `Tweak` e o mesmo backup/journal, e registra quais aplicou.
+  Ajustes que o usuário já aplicou manualmente (já têm backup) não são tocados.
+- **Ao fechar o jogo, trocar de jogo ou desligar o modo:** reverte só o que o modo jogo aplicou (modo seguro: drift = conflito, nada é sobrescrito).
+- **Queda:** se o arquivo de estado existir ao abrir o app, o usuário é perguntado se quer restaurar.
+- **Opt-in:** desligado por padrão. O monitoramento roda enquanto o app está aberto; com o modo ligado, aparece o ícone na
+  bandeja (abrir / desligar modo jogo) e minimizar esconde a janela na bandeja.
+- **WinForms** é usado só para o `NotifyIcon`; os usings implícitos de WinForms/Drawing foram removidos para evitar ambiguidade,
+  e o aviso WFAC010 (DPI no manifest, específico de WinForms) foi suprimido no projeto do App.

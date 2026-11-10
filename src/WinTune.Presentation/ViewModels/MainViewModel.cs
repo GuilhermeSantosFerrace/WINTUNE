@@ -55,6 +55,39 @@ public sealed partial class MainViewModel : ObservableObject
         Cleanup = new CleanupViewModel(services, dialogs, AddLog);
         Benchmark = new BenchmarkViewModel(services, dialogs, AddLog, Telemetry);
         ServicesTab = new ServicesViewModel(services, dialogs, AddLog);
+        Profiles = new ProfilesViewModel(services, dialogs, AddLog, this);
+    }
+
+    /// <summary>Aba Perfis e modo jogo.</summary>
+    public ProfilesViewModel Profiles { get; }
+
+    /// <summary>Captura o estado atual da tela como perfil.</summary>
+    public Core.Profiles.UserProfile CaptureProfile(string name) => new()
+    {
+        Name = name,
+        Focus = SelectedFocus,
+        Scenarios = SelectedScenarios,
+        Games = SelectedGames,
+        TweakIds = Recommendations.Where(r => r.IsSelected).Select(r => r.Id).ToList(),
+    };
+
+    /// <summary>Restaura um perfil na tela (não aplica nada sozinho).</summary>
+    public async Task ApplyProfileAsync(Core.Profiles.UserProfile profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        SelectedFocus = profile.Focus;
+        SiegeSelected = (profile.Games & GameTarget.RainbowSixSiege) != 0;
+        Cs2Selected = (profile.Games & GameTarget.Cs2) != 0;
+        foreach (var s in Scenarios)
+        {
+            s.IsChecked = (profile.Scenarios & s.Scenario) != 0;
+        }
+
+        await RefreshRecommendationsAsync().ConfigureAwait(true);
+        foreach (var r in Recommendations)
+        {
+            r.IsSelected = !r.AlreadyApplied && profile.TweakIds.Contains(r.Id);
+        }
     }
 
     /// <summary>Aba Serviços.</summary>

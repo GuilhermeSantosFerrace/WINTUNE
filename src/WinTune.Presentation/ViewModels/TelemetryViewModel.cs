@@ -193,7 +193,7 @@ public sealed partial class TelemetryViewModel : ObservableObject
             return;
         }
 
-        var inspector = new BackgroundLoadInspector(_services.ProcessUsage, _services.Games);
+        var inspector = new BackgroundLoadInspector(_services.ProcessUsage, _services.Games, _services.KnownBackgroundProcesses);
         var list = await Task.Run(() => inspector.Inspect()).ConfigureAwait(true);
         Consumers.Clear();
         foreach (var c in list)

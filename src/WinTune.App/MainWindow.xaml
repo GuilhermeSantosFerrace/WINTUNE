@@ -393,6 +393,52 @@
         </Grid>
       </TabItem>
 
+      <!-- ====================== Perfis e modo jogo ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Profiles}" AutomationProperties.Name="Perfis e modo jogo" DataContext="{Binding Profiles}">
+        <ScrollViewer Margin="12" VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Text="Perfis" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Um perfil guarda foco, cenários, jogos e ajustes selecionados na aba Otimizar. Carregar um perfil só preenche a tela; nada é aplicado sem confirmação." />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <TextBox Width="220" Text="{Binding NewProfileName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,8,0" AutomationProperties.Name="Nome do novo perfil" />
+              <Button Content="_Salvar seleção atual" Command="{Binding SaveCurrentCommand}" AutomationProperties.Name="Salvar seleção atual como perfil" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+              <ComboBox Width="220" ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}" DisplayMemberPath="Name" Margin="0,0,8,0" AutomationProperties.Name="Perfis salvos" />
+              <Button Content="_Carregar" Command="{Binding LoadSelectedCommand}" AutomationProperties.Name="Carregar perfil selecionado" />
+              <Button Content="_Apagar" Command="{Binding DeleteSelectedCommand}" AutomationProperties.Name="Apagar perfil selecionado" />
+            </StackPanel>
+
+            <TextBlock Text="Modo jogo automático" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Opcional. Quando o Siege ou o CS2 abrir (detecção só pelo nome do processo, sem tocar no jogo), aplica os ajustes marcados abaixo; ao fechar o jogo, restaura o estado anterior. Funciona enquanto o WinTune estiver aberto (minimizar o envia para a bandeja). Ajustes que você já aplicou manualmente não são alterados." />
+            <CheckBox IsChecked="{Binding IsGameModeEnabled}" Content="_Ligar modo jogo automático" FontWeight="SemiBold" Margin="0,0,0,8" AutomationProperties.Name="Ligar modo jogo automático" />
+            <TextBlock Text="{Binding GameModeStatus}" Margin="0,0,0,8" AutomationProperties.LiveSetting="Polite" />
+            <WrapPanel>
+              <GroupBox Header="Rainbow Six Siege" Width="360" Margin="0,0,12,8">
+                <ItemsControl ItemsSource="{Binding SiegeTweaks}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:GameModeTweakOption}">
+                      <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" AutomationProperties.Name="{Binding Name, StringFormat=Siege: {0}}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </GroupBox>
+              <GroupBox Header="Counter-Strike 2" Width="360" Margin="0,0,12,8">
+                <ItemsControl ItemsSource="{Binding Cs2Tweaks}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:GameModeTweakOption}">
+                      <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" AutomationProperties.Name="{Binding Name, StringFormat=CS2: {0}}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </GroupBox>
+            </WrapPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />
