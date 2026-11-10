@@ -51,7 +51,11 @@ public sealed partial class MainViewModel : ObservableObject
         }
 
         Telemetry = new TelemetryViewModel(services);
+        Startup = new StartupViewModel(services, dialogs, AddLog);
     }
+
+    /// <summary>Aba Inicialização.</summary>
+    public StartupViewModel Startup { get; }
 
     /// <summary>Aba Telemetria.</summary>
     public TelemetryViewModel Telemetry { get; }

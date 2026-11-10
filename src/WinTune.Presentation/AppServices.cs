@@ -1,5 +1,6 @@
 using WinTune.Core.Backup;
 using WinTune.Core.Games;
+using WinTune.Core.Startup;
 using WinTune.Core.Tweaks;
 using WinTune.Platform.Abstractions;
 
@@ -50,13 +51,16 @@ public sealed class AppServices
     /// <summary>Uso por processo (consumidores em segundo plano).</summary>
     public IProcessUsageReader? ProcessUsage { get; init; }
 
+    /// <summary>Gerenciador de inicialização.</summary>
+    public StartupManager? Startup { get; init; }
+
     /// <summary>
-    /// Resolve um ID de backup para o ajuste capaz de revertê-lo (catálogo + ajustes dinâmicos de fases posteriores).
+    /// Resolvedor extra de IDs de backup (ajustes dinâmicos de fases posteriores).
     /// </summary>
     public Func<string, Tweak?>? ResolveTweak { get; init; }
 
-    /// <summary>Resolve pelo resolvedor configurado ou pelo catálogo.</summary>
-    public Tweak? Resolve(string id) => ResolveTweak?.Invoke(id) ?? Catalog.Find(id);
+    /// <summary>Resolve um ID de backup para o ajuste capaz de revertê-lo (catálogo, inicialização e extras).</summary>
+    public Tweak? Resolve(string id) => Catalog.Find(id) ?? Startup?.Resolve(id) ?? ResolveTweak?.Invoke(id);
 }
 
 /// <summary>Diálogos (implementado com MessageBox no App e com respostas fixas nos testes).</summary>

@@ -232,6 +232,36 @@
         </ScrollViewer>
       </TabItem>
 
+      <!-- ====================== Inicialização ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Startup}" AutomationProperties.Name="Inicialização" DataContext="{Binding Startup}">
+        <DockPanel Margin="12">
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Itens que abrem no login. Nada é removido: desativar usa o mesmo mecanismo do Gerenciador de Tarefas e pode ser revertido. Itens da Microsoft, de segurança e de drivers ficam protegidos." />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="_Atualizar" Command="{Binding RefreshCommand}" AutomationProperties.Name="Atualizar lista de inicialização" />
+              <Button Content="_Desativar selecionados" Command="{Binding DisableSelectedCommand}" AutomationProperties.Name="Desativar itens selecionados" />
+              <Button Content="_Reativar selecionados" Command="{Binding ReenableSelectedCommand}" AutomationProperties.Name="Reativar itens desativados pelo WinTune" />
+            </StackPanel>
+            <CheckBox IsChecked="{Binding AllowDisable}" Margin="0,0,0,8" AutomationProperties.Name="Permitir desativar itens (experimental)">
+              <TextBlock TextWrapping="Wrap" Text="Permitir desativar (experimental): o formato usado pelo Gerenciador de Tarefas não tem documentação oficial. Depois de desativar um item, confira no Gerenciador de Tarefas &gt; Aplicativos de inicialização se o estado é o mesmo." />
+            </CheckBox>
+            <TextBlock Text="{Binding Status}" Style="{StaticResource Secondary}" Margin="0,0,0,8" AutomationProperties.LiveSetting="Polite" />
+          </StackPanel>
+          <DataGrid ItemsSource="{Binding Items}" AutomationProperties.Name="Itens de inicialização">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="Sel." Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+              <DataGridTextColumn Header="Nome" Binding="{Binding Name}" IsReadOnly="True" Width="2*" />
+              <DataGridTextColumn Header="Origem" Binding="{Binding Source}" IsReadOnly="True" Width="2*" />
+              <DataGridTextColumn Header="Editor" Binding="{Binding Publisher}" IsReadOnly="True" Width="2*" />
+              <DataGridTextColumn Header="Impacto" Binding="{Binding Impact}" IsReadOnly="True" Width="*" />
+              <DataGridTextColumn Header="Estado" Binding="{Binding State}" IsReadOnly="True" Width="2*" />
+              <DataGridTextColumn Header="Observação" Binding="{Binding Notes}" IsReadOnly="True" Width="3*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />

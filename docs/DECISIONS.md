@@ -208,3 +208,21 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Fase:** 7
 - **Decisão:** `Win32_PerfFormattedData_PerfProc_Process` (dados de desempenho do sistema; o WinTune não abre handles para os
   processos). Processos dos jogos são removidos pela comparação de nome antes de qualquer análise. Nunca finaliza processos.
+
+## D-027 — Inicialização: listagem por padrão; desativar é experimental e desligado
+
+- **Fase:** 8
+- **Contexto:** a Fase 8 manda implementar só a listagem se o formato binário de `StartupApproved` não for confirmado em
+  documentação. V17: só há fontes de comunidade (`02` = habilitado, `03` = desabilitado).
+- **Decisão:** a listagem é o comportamento padrão. A desativação (`03 00 00 00` + FILETIME) está implementada e testada com
+  registro fake, mas fica atrás da opção **"Permitir desativar (experimental)"**, desligada a cada abertura do app. O usuário deve
+  conferir no Gerenciador de Tarefas. Valores com primeiro byte diferente de `02`/`03` aparecem como "Desconhecido" e não são alterados.
+- **Reativar:** só para itens que o próprio WinTune desativou (há backup). A restauração volta ao binário original exato
+  (ou apaga o valor se ele não existia).
+- **Proteção:** bloqueados itens com editor/assinante Microsoft, componentes de segurança do Windows, fabricantes de
+  segurança (antivírus e agentes corporativos como Cisco, CrowdStrike, Zscaler...), fabricantes de hardware/drivers,
+  RunOnce e tarefas agendadas (somente leitura nesta tela). O assinante é lido do certificado embutido sem validar a cadeia;
+  isso só pode tornar o bloqueio mais restritivo, nunca liberar algo.
+- **Allowlist na reversão:** o ID é um hash de (origem, nome); a reconstrução procura apenas nas 5 chaves `StartupApproved`
+  fixas em código e em nomes que existem no registro real.
+- **Pendente (manual):** validar no Windows 11 real que desativar/reativar gera o mesmo estado exibido pelo Gerenciador de Tarefas.

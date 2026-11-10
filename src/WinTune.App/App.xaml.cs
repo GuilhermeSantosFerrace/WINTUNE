@@ -116,6 +116,7 @@ public partial class App : Application
         var catalog = new TweakCatalog(registry, runner);
         return new AppServices
         {
+            Startup = new Core.Startup.StartupManager(registry, fs, env, new ScheduledTasks()),
             SensorsFactory = () => new Platform.Sensors.UserModeSensors(wmi),
             ProcessUsage = new Platform.Sensors.ProcessUsageReader(wmi),
             Registry = registry,

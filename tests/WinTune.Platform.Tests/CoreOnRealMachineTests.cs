@@ -33,6 +33,22 @@ public class CoreOnRealMachineTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public void StartupManager_ListsRealItems_ReadOnly()
+    {
+        var manager = new Core.Startup.StartupManager(new ReadOnlyRegistryGuard(new WindowsRegistry()), new WindowsFileSystem(),
+            new WindowsEnvironment(), new ScheduledTasks());
+
+        var items = manager.List();
+
+        foreach (var i in items)
+        {
+            output.WriteLine($"{i.Source} | {i.Name} | {i.Publisher} | {i.State} | {i.Impact} | {i.BlockedReason}");
+        }
+
+        items.Should().NotBeNull();
+    }
+
+    [Fact]
     public void Catalog_IsAppliedAndDescribeChanges_AreReadOnly()
     {
         var catalog = new TweakCatalog(new ReadOnlyRegistryGuard(new WindowsRegistry()), new ReadOnlyProcessGuard(new ProcessRunner()));

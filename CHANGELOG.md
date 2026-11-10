@@ -37,3 +37,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 7: telemetria ao vivo somente em modo usuário (PDH em inglês, NVML, WMI), `Sampler` 1 Hz com buffer circular e
   sessões rotuladas por jogo, `BottleneckClassifier` (GPU, CPU 1 thread, CPU total, RAM/paginação, disco, `thermal-throttle`),
   consumidores em segundo plano (`game-background-load`), aba Telemetria com gráficos leves (Polyline). Overhead medido: 0,076%.
+- Fase 8: gerenciador de inicialização (Run/RunOnce HKCU/HKLM/32 bits, pastas Inicializar, tarefas ao logon via Agendador),
+  editor/assinante, impacto estimado, itens protegidos; desativação reversível via `StartupApproved` atrás de opção
+  experimental desligada por padrão; integração com "Desfazer tudo".
