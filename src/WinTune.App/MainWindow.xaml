@@ -1,0 +1,23 @@
+<Window x:Class="WinTune.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WinTune"
+        Width="800"
+        Height="500"
+        WindowStartupLocation="CenterScreen"
+        AutomationProperties.Name="WinTune - janela principal">
+  <Grid Margin="24">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+      <TextBlock Text="WinTune"
+                 FontSize="28"
+                 FontWeight="SemiBold"
+                 HorizontalAlignment="Center"
+                 AutomationProperties.Name="Título WinTune" />
+      <TextBlock Text="Fundação do projeto (Fase 0). A interface completa chega na Fase 6."
+                 Margin="0,12,0,0"
+                 TextWrapping="Wrap"
+                 HorizontalAlignment="Center"
+                 AutomationProperties.Name="Status do projeto" />
+    </StackPanel>
+  </Grid>
+</Window>

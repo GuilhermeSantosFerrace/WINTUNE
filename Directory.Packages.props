@@ -1,0 +1,17 @@
+<Project>
+  <!--
+    Gerenciamento central de pacotes. Todas as versões são EXATAS (sem ranges, sem curingas),
+    conforme a regra 7 da seção 0 do spec.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Testes -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="[17.14.1]" />
+    <PackageVersion Include="xunit" Version="[2.9.3]" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="[2.8.2]" />
+    <PackageVersion Include="FluentAssertions" Version="[7.2.0]" />
+  </ItemGroup>
+</Project>

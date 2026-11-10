@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WinTune.App</RootNamespace>
+    <AssemblyName>WinTune</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTune.Core\WinTune.Core.csproj" />
+    <ProjectReference Include="..\WinTune.Platform\WinTune.Platform.csproj" />
+  </ItemGroup>
+
+</Project>
