@@ -49,6 +49,27 @@ public class CoreOnRealMachineTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public void CleanupPreview_OnRealFileSystem_DoesNotDelete()
+    {
+        var service = new Core.Cleanup.CleanupService(new WindowsFileSystem(), new SystemClock(), new WindowsEnvironment());
+
+        var plan = service.Preview(["user-temp", "thumbnail-cache", "wer-reports", "shader-cache"]);
+
+        output.WriteLine($"Candidatos: {plan.Candidates.Count}, {plan.TotalBytes / 1024 / 1024} MB; ignorados: {plan.Skipped.Count}");
+        foreach (var (cat, bytes) in plan.BytesByCategory)
+        {
+            output.WriteLine($"{cat}: {bytes / 1024 / 1024} MB");
+        }
+
+        foreach (var reason in plan.Skipped.GroupBy(s => s.Reason))
+        {
+            output.WriteLine($"ignorado ({reason.Key}): {reason.Count()}");
+        }
+
+        plan.Candidates.Should().OnlyContain(c => File.Exists(c.Path));
+    }
+
+    [Fact]
     public void Catalog_IsAppliedAndDescribeChanges_AreReadOnly()
     {
         var catalog = new TweakCatalog(new ReadOnlyRegistryGuard(new WindowsRegistry()), new ReadOnlyProcessGuard(new ProcessRunner()));

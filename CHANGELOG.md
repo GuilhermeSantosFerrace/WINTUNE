@@ -40,3 +40,5 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 8: gerenciador de inicialização (Run/RunOnce HKCU/HKLM/32 bits, pastas Inicializar, tarefas ao logon via Agendador),
   editor/assinante, impacto estimado, itens protegidos; desativação reversível via `StartupApproved` atrás de opção
   experimental desligada por padrão; integração com "Desfazer tudo".
+- Fase 9: limpeza segura (temporários > 24 h, miniaturas, relatórios WER, Otimização de Entrega, caches de shader opcionais)
+  com prévia obrigatória, allowlist de raízes, proteção contra links/path traversal, arquivos em uso ignorados e relatório.

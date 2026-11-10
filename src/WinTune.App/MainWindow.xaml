@@ -262,6 +262,40 @@
         </DockPanel>
       </TabItem>
 
+      <!-- ====================== Limpeza ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Cleanup}" AutomationProperties.Name="Limpeza" DataContext="{Binding Cleanup}">
+        <DockPanel Margin="12">
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock Text="{Binding Irreversible, Mode=OneTime}" Foreground="{DynamicResource Brush.Critical}" FontWeight="SemiBold"
+                       TextWrapping="Wrap" Margin="0,0,0,8" />
+            <ItemsControl ItemsSource="{Binding Categories}" IsTabStop="False">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:CleanupCategoryViewModel}">
+                  <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                      <DockPanel>
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding PreviewSize}" FontWeight="SemiBold" />
+                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" AutomationProperties.Name="{Binding Name}" />
+                      </DockPanel>
+                      <TextBlock Text="{Binding Description}" Style="{StaticResource Secondary}" Margin="22,2,0,0" />
+                      <TextBlock Text="{Binding Warning}" Foreground="{DynamicResource Brush.Warning}" TextWrapping="Wrap" Margin="22,2,0,0"
+                                 Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,8">
+              <Button Content="_Gerar prévia" Style="{StaticResource PrimaryButton}" Command="{Binding PreviewCommand}" AutomationProperties.Name="Gerar prévia da limpeza" />
+              <Button Content="_Limpar (irreversível)" Command="{Binding CleanCommand}" AutomationProperties.Name="Executar limpeza, irreversível" />
+            </StackPanel>
+            <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" Margin="0,0,0,8" AutomationProperties.LiveSetting="Polite" />
+            <TextBlock Text="Ignorados e motivo:" Style="{StaticResource Secondary}" />
+          </StackPanel>
+          <ListBox ItemsSource="{Binding Skipped}" AutomationProperties.Name="Arquivos ignorados" />
+        </DockPanel>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />

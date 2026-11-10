@@ -226,3 +226,17 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Allowlist na reversão:** o ID é um hash de (origem, nome); a reconstrução procura apenas nas 5 chaves `StartupApproved`
   fixas em código e em nomes que existem no registro real.
 - **Pendente (manual):** validar no Windows 11 real que desativar/reativar gera o mesmo estado exibido pelo Gerenciador de Tarefas.
+
+## D-028 — Limpeza: allowlist fixa, prévia obrigatória, sem Lixeira
+
+- **Fase:** 9
+- **Decisão:**
+  - Raízes calculadas só a partir de pastas conhecidas (`%TEMP%`, `%LOCALAPPDATA%`, `%ProgramData%`, `%SystemRoot%`), nunca de
+    entrada do usuário. Cada arquivo tem o caminho real resolvido (`GetFinalPathNameByHandle`) e precisa estar sob a raiz real.
+  - Links simbólicos/junções: arquivos que são links são ignorados; diretórios que são links não são percorridos.
+  - Arquivos em uso (não abrem com acesso exclusivo) são ignorados; `%TEMP%` só apaga arquivos com mais de 24 h.
+  - `Execute` só aceita uma `CleanupPlan` criada pelo mesmo serviço (`Preview`) e revalida cada arquivo antes de apagar.
+  - **Lixeira não é usada:** as categorias são caches e temporários regeneráveis (não são documentos do usuário); enviar para
+    a Lixeira só adiaria a liberação de espaço. A UI diz explicitamente que a limpeza é irreversível e não entra em "Desfazer tudo".
+  - Cache do Otimização de Entrega e caches de shader vêm desmarcados; shader com aviso de recompilação.
+- **Medição real (somente prévia, sem apagar):** 3.138 arquivos / 1,1 GB candidatos em `%TEMP%`; 196 em uso e 34 recentes ignorados.

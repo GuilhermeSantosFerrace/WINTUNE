@@ -52,7 +52,11 @@ public sealed partial class MainViewModel : ObservableObject
 
         Telemetry = new TelemetryViewModel(services);
         Startup = new StartupViewModel(services, dialogs, AddLog);
+        Cleanup = new CleanupViewModel(services, dialogs, AddLog);
     }
+
+    /// <summary>Aba Limpeza.</summary>
+    public CleanupViewModel Cleanup { get; }
 
     /// <summary>Aba Inicialização.</summary>
     public StartupViewModel Startup { get; }
