@@ -48,27 +48,19 @@ Arquitetura: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Telas: [`docs/UX.
 
 ## Desenvolver
 
-Pré-requisitos: Windows 11 x64 e [SDK .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) (versão em `global.json`).
-Sem administrador, dá para instalar por usuário:
-
-```powershell
-Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
-.\dotnet-install.ps1 -Channel 8.0 -InstallDir "$env:LOCALAPPDATA\Microsoft\dotnet"
-```
+O guia completo (pré-requisitos, executar na máquina, compilar, testar, publicar, editor, CI/release e problemas comuns) está
+em **[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)**. Resumo:
 
 ```powershell
 git clone https://github.com/GuilhermeSantosFerrace/WINTUNE.git
 cd WINTUNE
 .\build.ps1 build        # compila (analisadores como erro)
-.\build.ps1 test         # testes de unidade (sem Category=Integration)
-.\build.ps1 run          # executa o app (UAC)
-.\build.ps1 publish      # .\publish\WinTune.exe (single-file, self-contained, win-x64)
-.\build.ps1 installer -Version 1.0.0   # instalador em .\artifacts (requer Inno Setup 6)
-.\build.ps1 clean
+.\build.ps1 run          # compila e abre o app (UAC)
+.\build.ps1 test         # testes de unidade (os mesmos do CI)
+.\build.ps1 publish      # .\publish\WinTune.exe (arquivo único, sem precisar de .NET instalado)
 ```
 
-Testes de integração (`[Trait("Category","Integration")]`) leem o Windows real com guardas que **proíbem escrita**; rode só
-localmente: `dotnet test --filter Category=Integration`.
+Requer Windows 11 x64 e o SDK .NET 8 (versão em `global.json`).
 
 ### Estrutura
 

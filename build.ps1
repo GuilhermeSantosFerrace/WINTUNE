@@ -6,7 +6,10 @@
     Alvos disponíveis:
       build    Compila a solução (Release por padrão).
       test     Executa os testes de unidade (exclui Category=Integration).
-      run      Executa o aplicativo WPF.
+      run      Compila e abre o aplicativo (o Windows pede permissão de administrador / UAC).
+      integration Testes de integração somente leitura contra o Windows real (só na máquina local).
+      format   Corrige a formatação do código (dotnet format).
+      coverage Mede a cobertura do WinTune.Core e falha abaixo de 80%.
       publish  Gera executável single-file self-contained para win-x64 em .\publish.
       installer Publica e compila o instalador Inno Setup em .\artifacts (requer Inno Setup 6).
       clean    Remove bin/, obj/, publish/ e TestResults/.
@@ -18,7 +21,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('build', 'test', 'run', 'publish', 'installer', 'clean')]
+    [ValidateSet('build', 'test', 'run', 'integration', 'format', 'coverage', 'publish', 'installer', 'clean')]
     [string]$Target = 'build',
 
     [ValidateSet('Debug', 'Release')]
@@ -62,7 +65,27 @@ switch ($Target) {
         Invoke-Dotnet @('test', $solution, '-c', $Configuration, '--filter', 'Category!=Integration')
     }
     'run' {
-        Invoke-Dotnet @('run', '--project', $appProject, '-c', $Configuration)
+        # O app exige administrador (manifest requireAdministrator). "dotnet run" falharia num terminal comum
+        # (erro 740); abrir pelo shell faz o Windows mostrar o UAC.
+        Invoke-Dotnet @('build', $appProject, '-c', $Configuration)
+        $exe = Join-Path $root "src\WinTune.App\bin\$Configuration\net8.0-windows\WinTune.exe"
+        Start-Process -FilePath $exe
+    }
+    'integration' {
+        Invoke-Dotnet @('test', $solution, '-c', $Configuration, '--filter', 'Category=Integration')
+    }
+    'format' {
+        Invoke-Dotnet @('format', $solution)
+    }
+    'coverage' {
+        $results = Join-Path $root 'TestResults\coverage'
+        if (Test-Path $results) { Remove-Item $results -Recurse -Force }
+        Invoke-Dotnet @('test', (Join-Path $root 'tests\WinTune.Core.Tests'), '-c', $Configuration, '--filter', 'Category!=Integration',
+            '--settings', (Join-Path $root 'coverage.runsettings'), '--collect:XPlat Code Coverage', '--results-directory', $results)
+        $file = Get-ChildItem $results -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+        $rate = [double]([xml](Get-Content $file.FullName)).coverage.'line-rate'
+        Write-Host ("Cobertura de linhas do WinTune.Core: {0:P1} (mínimo 80%)" -f $rate)
+        if ($rate -lt 0.80) { throw 'Cobertura abaixo de 80%.' }
     }
     'publish' {
         Invoke-Dotnet @('publish', $appProject, '-c', 'Release', '-r', 'win-x64', '--self-contained',

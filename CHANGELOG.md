@@ -7,6 +7,17 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Adicionado
+
+- `docs/DEVELOPMENT.md`: guia de pré-requisitos, execução local, comandos de build/teste/publicação, dados do app, editor,
+  regras de qualidade, CI/release e problemas comuns.
+- `build.ps1`: alvos `integration`, `format` e `coverage`.
+
+### Corrigido
+
+- `build.ps1 run` agora compila e abre o app pelo shell (mostra o UAC); antes usava `dotnet run`, que falhava com erro 740
+  em terminal sem elevação.
+
 ### Pendente para 1.0.0
 
 - Executar o roteiro manual em VM Windows 11 (`docs/SAFETY.md`, seção 5): instalação limpa, recuperação sem o app,
