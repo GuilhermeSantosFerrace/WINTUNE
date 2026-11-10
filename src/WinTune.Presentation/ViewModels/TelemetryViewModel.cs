@@ -30,7 +30,7 @@ public sealed class ConsumerItem
 }
 
 /// <summary>Aba Telemetria: monitor ao vivo (1 Hz), sessão de diagnóstico e consumidores em segundo plano.</summary>
-public sealed partial class TelemetryViewModel : ObservableObject
+public sealed partial class TelemetryViewModel : ObservableObject, IDisposable
 {
     private const int SeriesLength = 120;
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
@@ -104,6 +104,16 @@ public sealed partial class TelemetryViewModel : ObservableObject
     private IReadOnlyList<double> _ramSeries = [];
 
     public bool HasUnavailable => UnavailableText.Length > 0;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _monitorCts?.Cancel();
+        _monitorCts?.Dispose();
+        _monitorCts = null;
+        _sensors?.Dispose();
+        _sensors = null;
+    }
 
     partial void OnUnavailableTextChanged(string value) => OnPropertyChanged(nameof(HasUnavailable));
 

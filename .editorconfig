@@ -26,6 +26,13 @@ dotnet_style_readonly_field = true:warning
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 
+# Analisadores desligados com justificativa (docs/DECISIONS.md, D-032):
+# CA1826/CA1859: micro-otimizações de coleção irrelevantes nesta escala (listas de dezenas de itens).
+# CA1848: delegados LoggerMessage; o app registra poucas linhas por operação.
+dotnet_diagnostic.CA1826.severity = none
+dotnet_diagnostic.CA1859.severity = none
+dotnet_diagnostic.CA1848.severity = none
+
 # Nomenclatura: campos privados com prefixo _ (sugestão)
 dotnet_naming_rule.private_fields_underscore.symbols = private_fields
 dotnet_naming_rule.private_fields_underscore.style = underscore_camel

@@ -44,7 +44,7 @@ internal sealed class PdhQuery : IDisposable
 
     public bool Has(string path) => _counters.ContainsKey(path);
 
-    public void Collect() => PdhCollectQueryData(_query);
+    public bool Collect() => PdhCollectQueryData(_query) == 0;
 
     public double? Value(string path)
     {
@@ -104,7 +104,7 @@ internal sealed class PdhQuery : IDisposable
     {
         if (!_disposed)
         {
-            PdhCloseQuery(_query);
+            _ = PdhCloseQuery(_query);
             _disposed = true;
         }
     }

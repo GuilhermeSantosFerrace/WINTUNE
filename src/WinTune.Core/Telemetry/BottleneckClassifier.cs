@@ -51,6 +51,7 @@ public sealed class BottleneckClassifier
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
 
     /// <summary>Classifica a janela.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822", Justification = "API de instância mantida para limiares configuráveis.")]
     public BottleneckReport Classify(IReadOnlyList<TelemetrySample> samples)
     {
         ArgumentNullException.ThrowIfNull(samples);

@@ -14,7 +14,7 @@ namespace WinTune.App;
 /// <summary>
 /// Ponto de entrada: instância única, composição das dependências, tema e janela principal.
 /// </summary>
-public partial class App : Application
+public partial class App : Application, IDisposable
 {
     private const string MutexName = @"Global\WinTune.SingleInstance";
     private Mutex? _mutex;
@@ -50,6 +50,7 @@ public partial class App : Application
 
         var dialogs = new MessageBoxDialogService();
         var vm = new MainViewModel(services, dialogs, _loggerFactory.CreateLogger<MainViewModel>());
+        _viewModel = vm;
         var window = new MainWindow { DataContext = vm };
         MainWindow = window;
 
@@ -71,13 +72,26 @@ public partial class App : Application
             dialogs.Inform("WinTune", warning);
         }
 
-        _ = vm.Profiles.InitializeAsync();
+        _ = vm.InitializeAsync();
     }
 
     private TrayIcon? _tray;
+    private MainViewModel? _viewModel;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _viewModel?.Dispose();
+        _tray?.Dispose();
+        _tray = null;
+        _loggerFactory?.Dispose();
+        _loggerFactory = null;
+        GC.SuppressFinalize(this);
+    }
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _viewModel?.Dispose();
         _tray?.Dispose();
         _loggerFactory?.Dispose();
         if (_mutex is not null)

@@ -17,7 +17,7 @@ namespace WinTune.Presentation.ViewModels;
 /// Tela principal: foco, jogos, cenários, recomendações, diagnóstico e ações (Analisar, Aplicar, Desfazer tudo).
 /// Toda operação longa roda fora da thread de UI (<see cref="Task.Run(Action)"/>) e aceita cancelamento.
 /// </summary>
-public sealed partial class MainViewModel : ObservableObject
+public sealed partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly AppServices _services;
     private readonly IDialogService _dialogs;
@@ -65,6 +65,33 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>Aba Perfis e modo jogo.</summary>
     public ProfilesViewModel Profiles { get; }
 
+    /// <summary>
+    /// Na abertura: detecta operações interrompidas (R13) e oferece restaurar; depois verifica o modo jogo pendente.
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        var reconciler = new Reconciler(_services.Backup, _services.Resolve);
+        if (reconciler.HasPending)
+        {
+            var pending = string.Join("\n", reconciler.Describe().Select(d => "• " + d));
+            if (_dialogs.Confirm("Operação interrompida",
+                    "O WinTune foi interrompido no meio de uma operação:\n\n" + pending +
+                    "\n\nDesfazer agora o que ficou pela metade (restaurar o estado anterior)?"))
+            {
+                foreach (var o in await Task.Run(reconciler.Reconcile).ConfigureAwait(true))
+                {
+                    AddLog($"Recuperação — {o.TweakId}: {StatusText(o.Result)}. {o.Result.Message}");
+                }
+            }
+            else
+            {
+                AddLog("Operação interrompida pendente; será oferecida de novo na próxima abertura.");
+            }
+        }
+
+        await Profiles.InitializeAsync().ConfigureAwait(true);
+    }
+
     /// <summary>Captura o estado atual da tela como perfil.</summary>
     public Core.Profiles.UserProfile CaptureProfile(string name) => new()
     {
@@ -105,6 +132,13 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>Aba Inicialização.</summary>
     public StartupViewModel Startup { get; }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Telemetry.Dispose();
+        Profiles.Dispose();
+    }
 
     /// <summary>Aba Telemetria.</summary>
     public TelemetryViewModel Telemetry { get; }
@@ -410,7 +444,7 @@ public sealed partial class MainViewModel : ObservableObject
         _ => r.Status.ToString(),
     };
 
-    private string BuildSummary(IReadOnlyList<TweakItemViewModel> selected)
+    private static string BuildSummary(IReadOnlyList<TweakItemViewModel> selected)
     {
         var sb = new StringBuilder("O WinTune vai alterar o seguinte (tudo reversível em \"Desfazer tudo\"):\n\n");
         foreach (var item in selected)

@@ -33,6 +33,7 @@ public sealed class RecommendationEngine
     }
 
     /// <summary>Filtra, aplica o conselho por hardware e ordena por prioridade (desc) e nome.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822", Justification = "API de instância mantida para configuração futura (pesos, limites).")]
     public IReadOnlyList<Recommendation> Recommend(IEnumerable<Tweak> tweaks, RecommendationRequest request)
     {
         ArgumentNullException.ThrowIfNull(tweaks);

@@ -287,3 +287,31 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
   bandeja (abrir / desligar modo jogo) e minimizar esconde a janela na bandeja.
 - **WinForms** é usado só para o `NotifyIcon`; os usings implícitos de WinForms/Drawing foram removidos para evitar ambiguidade,
   e o aviso WFAC010 (DPI no manifest, específico de WinForms) foi suprimido no projeto do App.
+
+## D-032 — Analisadores e formatação (Fase 14)
+
+- **Decisão:** `AnalysisMode=Recommended` para os projetos de `src/` (warnings como erro). Corrigidos: CA1001 (ViewModels e App
+  descartáveis), CA1806 (códigos de retorno do PDH), CA1838 (buffer `char[]` no P/Invoke), CA1822 (onde fazia sentido), CA1720
+  (renomeado `PowerScheme.SchemeGuid`).
+- **Supressões com justificativa:** CA1716 em `Tweak.For` (nome do contrato da seção 3.3); CA1720 em `RegistryValueKind.String`
+  (espelha REG_SZ); CA1822 em `RecommendationEngine.Recommend` e `BottleneckClassifier.Classify` (API de instância mantida);
+  CA1826/CA1859/CA1848 desligados no `.editorconfig` (micro-otimizações sem efeito nesta escala).
+- **Projetos de teste:** conjunto padrão de analisadores (o `Recommended` exige, por exemplo, nomes sem `_`, incompatível com a
+  convenção de nomes de teste).
+- **CI:** `dotnet format --verify-no-changes`, build com analisadores como erro, testes e **cobertura mínima de 80%** no Core
+  (medida: 91,1% de linhas, 77,8% de ramos; código gerado por source generators excluído via `coverage.runsettings`).
+
+## D-033 — Reconciliação de operações interrompidas
+
+- **Fase:** 14
+- **Decisão:** `Reconciler` roda na abertura do app (com confirmação). Para cada intenção sem conclusão: se não há backup, nada
+  foi escrito (o original é salvo antes da 1ª escrita) e a intenção é encerrada; se há backup, o ajuste é revertido no modo
+  seguro (valores ainda no original são ignorados; valores no "aplicado" voltam ao original). Testado simulando a morte do
+  processo depois da 1ª escrita (`ResilienceTests`). O teste com processo real (matar `WinTune.exe`) está no roteiro manual
+  de `docs/SAFETY.md`.
+
+## D-034 — Rede
+
+- **Fase:** 14
+- **Decisão:** nenhuma API de rede no código (teste `ArchitectureTests.NoNetworkApis`). A verificação de atualização opt-in
+  (Fase 15) **não** foi implementada; a verificação por firewall/Monitor de Recursos está no roteiro manual.

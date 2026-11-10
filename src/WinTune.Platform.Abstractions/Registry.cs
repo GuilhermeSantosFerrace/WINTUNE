@@ -17,6 +17,7 @@ public enum RegistryValueKind
     DWord,
 
     /// <summary>REG_SZ.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1720", Justification = "Espelha o tipo REG_SZ do Windows.")]
     String,
 
     /// <summary>REG_EXPAND_SZ (lido sem expandir variáveis).</summary>

@@ -89,7 +89,7 @@ public class PowerPlanTests
         PowerCfg.GetActive(sim.Runner).Should().Be(PowerCfgSimulator.Balanced);
         var list = PowerCfg.List(sim.Runner);
         list.Should().HaveCount(3);
-        list.Single(s => s.Active).Guid.Should().Be(PowerCfgSimulator.Balanced);
+        list.Single(s => s.Active).SchemeGuid.Should().Be(PowerCfgSimulator.Balanced);
         list.Should().ContainSingle(s => PowerCfg.IsAmdRyzenBalanced(s));
     }
 

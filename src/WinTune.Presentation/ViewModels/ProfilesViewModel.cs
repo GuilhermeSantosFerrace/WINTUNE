@@ -28,7 +28,7 @@ public sealed partial class GameModeTweakOption : ObservableObject
 }
 
 /// <summary>Aba Perfis e modo jogo automático (opt-in).</summary>
-public sealed partial class ProfilesViewModel : ObservableObject
+public sealed partial class ProfilesViewModel : ObservableObject, IDisposable
 {
     private readonly AppServices _services;
     private readonly IDialogService _dialogs;
@@ -74,6 +74,14 @@ public sealed partial class ProfilesViewModel : ObservableObject
     public TimeSpan PollInterval { get; set; } = TimeSpan.FromSeconds(5);
 
     public ObservableCollection<UserProfile> Profiles { get; } = [];
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _pollCts?.Cancel();
+        _pollCts?.Dispose();
+        _pollCts = null;
+    }
 
     public ObservableCollection<GameModeTweakOption> SiegeTweaks { get; } = [];
 

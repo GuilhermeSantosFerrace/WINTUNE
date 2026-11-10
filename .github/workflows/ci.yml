@@ -25,11 +25,23 @@ jobs:
       - name: Restore
         run: dotnet restore WinTune.sln
 
-      - name: Build
+      - name: Format (verificação)
+        run: dotnet format WinTune.sln --verify-no-changes --no-restore
+
+      - name: Build (analisadores como erro)
         run: dotnet build WinTune.sln -c Release --no-restore
 
       - name: Test (sem testes de integração)
         run: dotnet test WinTune.sln -c Release --no-build --filter "Category!=Integration" --logger "trx" --results-directory TestResults
+
+      - name: Cobertura do Core (mínimo 80%)
+        shell: pwsh
+        run: |
+          dotnet test tests/WinTune.Core.Tests -c Release --no-build --filter "Category!=Integration" --settings coverage.runsettings --collect:"XPlat Code Coverage" --results-directory TestResults/coverage
+          $file = Get-ChildItem TestResults/coverage -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+          $rate = [double]([xml](Get-Content $file.FullName)).coverage.'line-rate'
+          Write-Host ("Cobertura de linhas do WinTune.Core: {0:P1}" -f $rate)
+          if ($rate -lt 0.80) { throw "Cobertura abaixo de 80%." }
 
       - name: Upload test results
         if: always()

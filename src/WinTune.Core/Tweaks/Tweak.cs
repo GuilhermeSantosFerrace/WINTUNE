@@ -23,6 +23,7 @@ public abstract class Tweak
     public abstract string Description { get; }
 
     /// <summary>Focos aos quais o ajuste se aplica.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716", Justification = "Nome definido pelo contrato da seção 3.3 do spec.")]
     public abstract Focus[] For { get; }
 
     /// <summary>Cenários que o ajuste ajuda (None = qualquer cenário).</summary>

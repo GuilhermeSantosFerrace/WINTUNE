@@ -8,6 +8,8 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Fase 14: conjunto "Recommended" dos analisadores .NET como erro no código de produção (src/). -->
+    <AnalysisMode Condition="$(MSBuildProjectDirectory.Contains('\src\'))">Recommended</AnalysisMode>
     <Deterministic>true</Deterministic>
 
     <VersionPrefix>0.1.0</VersionPrefix>

@@ -155,14 +155,14 @@ public sealed class WindowsFileSystem : IFileSystem
             return null;
         }
 
-        var buffer = new StringBuilder(1024);
-        var len = NativeMethods.GetFinalPathNameByHandleW(handle, buffer, (uint)buffer.Capacity, 0);
-        if (len == 0 || len >= buffer.Capacity)
+        var buffer = new char[1024];
+        var len = NativeMethods.GetFinalPathNameByHandleW(handle, buffer, (uint)buffer.Length, 0);
+        if (len == 0 || len >= buffer.Length)
         {
             return null;
         }
 
-        var result = buffer.ToString();
+        var result = new string(buffer, 0, (int)len);
         if (result.StartsWith(@"\\?\UNC\", StringComparison.Ordinal))
         {
             return @"\\" + result[8..];
@@ -265,6 +265,6 @@ public sealed class WindowsFileSystem : IFileSystem
             IntPtr securityAttributes, FileMode creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static extern uint GetFinalPathNameByHandleW(SafeFileHandle file, StringBuilder filePath, uint filePathLength, uint flags);
+        public static extern uint GetFinalPathNameByHandleW(SafeFileHandle file, [Out] char[] filePath, uint filePathLength, uint flags);
     }
 }

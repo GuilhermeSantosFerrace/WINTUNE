@@ -51,3 +51,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   jogo (detecção só pelo nome do processo, aplica ao abrir e restaura ao fechar, estado pendente após queda), ícone na bandeja.
 - Fase 13: relatório exportável em Markdown e JSON (hardware, diagnóstico, ajustes ativos, benchmark, histórico, versão),
   anonimizado (sem usuário, computador, números de série ou chaves); aba Histórico (journal) e botão "Abrir pasta de logs".
+- Fase 14: analisadores `Recommended` como erro em `src/`, `dotnet format` verificado no CI, cobertura mínima de 80% no Core
+  (91,1%), `Reconciler` para operações interrompidas (R13) com teste de queda no meio de `Apply`, `docs/SAFETY.md`
+  (política, superfície revisada, recuperação manual, roteiro em VM), `docs/ARCHITECTURE.md` e `THIRD_PARTY_NOTICES.md`.

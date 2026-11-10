@@ -6,10 +6,10 @@ using WinTune.Platform.Abstractions;
 namespace WinTune.Core.Tweaks;
 
 /// <summary>Plano de energia listado pelo <c>powercfg</c>.</summary>
-/// <param name="Guid">GUID (minúsculo).</param>
+/// <param name="SchemeGuid">GUID (minúsculo).</param>
 /// <param name="Name">Nome localizado.</param>
 /// <param name="Active">Indica o plano ativo.</param>
-public sealed record PowerScheme(string Guid, string Name, bool Active);
+public sealed record PowerScheme(string SchemeGuid, string Name, bool Active);
 
 /// <summary>Leitura e parsing do <c>powercfg</c>, independentes do idioma (regex de GUID).</summary>
 public static partial class PowerCfg
@@ -157,7 +157,7 @@ public sealed class PowerPlanTweak : Tweak
             return true;
         }
 
-        var scheme = PowerCfg.List(_runner).FirstOrDefault(s => s.Guid == active);
+        var scheme = PowerCfg.List(_runner).FirstOrDefault(s => s.SchemeGuid == active);
         return scheme is not null && HighPerformanceNames.Contains(scheme.Name);
     }
 
@@ -179,7 +179,7 @@ public sealed class PowerPlanTweak : Tweak
         }
 
         var schemes = PowerCfg.List(_runner);
-        string? target = schemes.Any(s => s.Guid == PowerCfg.HighPerformanceGuid) ? PowerCfg.HighPerformanceGuid : null;
+        string? target = schemes.Any(s => s.SchemeGuid == PowerCfg.HighPerformanceGuid) ? PowerCfg.HighPerformanceGuid : null;
         if (active == PowerCfg.HighPerformanceGuid || (target is null && IsApplied()))
         {
             return TweakResult.Skipped(Id, "O plano Alto desempenho já está ativo; nada a fazer.");
@@ -264,7 +264,7 @@ public sealed class PowerPlanTweak : Tweak
         var current = PowerCfg.GetActive(_runner);
 
         // Allowlist: só restaura um GUID que o próprio powercfg reconhece.
-        if (!schemes.Any(s => s.Guid == previous))
+        if (!schemes.Any(s => s.SchemeGuid == previous))
         {
             return TweakResult.Failed(Id, $"O plano anterior ({previous}) não existe mais. Escolha um plano em Opções de Energia.");
         }
@@ -288,7 +288,7 @@ public sealed class PowerPlanTweak : Tweak
         }
 
         if (PowerCfg.IsGuid(createdScheme) && createdScheme != previous && createdScheme != PowerCfg.HighPerformanceGuid &&
-            schemes.Any(s => s.Guid == createdScheme))
+            schemes.Any(s => s.SchemeGuid == createdScheme))
         {
             PowerCfg.RunWithGuid(_runner, "/delete", createdScheme!);
         }
