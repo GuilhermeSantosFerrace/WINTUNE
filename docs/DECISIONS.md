@@ -254,3 +254,18 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Sem frametime:** só telemetria; o veredito geral fica "dados insuficientes" (nenhum FPS é estimado).
 - **Jogos:** o relatório nunca mistura jogos; rodadas de jogos diferentes geram aviso.
 - **Persistência:** `%LOCALAPPDATA%\WinTune\sessions\*.json` (schema 1, até 10 MB; arquivos inválidos são ignorados e registrados).
+
+## D-030 — Allowlist de serviços e tarefas de terceiros
+
+- **Fase:** 11
+- **Serviços (nomes exatos):** `AdobeARMservice`, `gupdate`, `gupdatem`, `brave`, `bravem`, `MozillaMaintenance`,
+  `LGHUBUpdaterService`. Só são alteráveis se existirem, estiverem em Automático e o executável **não** for da Microsoft nem
+  estiver sob `%SystemRoot%`. A lista é propositalmente curta (regra 5: não inventar nomes); confirmar na máquina real e
+  ampliar com cuidado.
+- **Tarefas (prefixo do caminho, autor não-Microsoft):** `\GoogleUpdateTaskMachine*`, `\Adobe Acrobat Update Task*`,
+  `\BraveSoftwareUpdateTaskMachine*`. Só habilitar/desabilitar; nunca apagar.
+- **Mudança:** apenas Automático → Manual (via `ChangeServiceConfig`); o serviço nunca é parado. A reversão restaura o tipo
+  exato (inclusive "Automático (atraso)") e só aceita, do backup, o valor "Automático"; drift = conflito.
+- **IDs:** `service-manual:<nome>` (reconstrução só aceita nomes da allowlist em código) e `task-disable:<hash do caminho>`
+  (reconstrução só entre tarefas existentes que casam com a allowlist).
+- **Verificação real (somente leitura):** 323 serviços auditados; nenhum serviço da Microsoft aparece como alterável.

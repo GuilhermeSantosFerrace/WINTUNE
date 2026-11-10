@@ -70,6 +70,23 @@ public class CoreOnRealMachineTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public void ServiceAudit_OnRealMachine_NoMicrosoftServiceIsChangeable()
+    {
+        var wmi = new WmiReader();
+        var auditor = new Core.Services.ServiceAuditor(new ServiceControl(wmi, new ReadOnlyRegistryGuard(new WindowsRegistry())),
+            new ScheduledTasks(), new WindowsFileSystem(), new WindowsEnvironment(), new Sensors.ProcessUsageReader(wmi));
+
+        var services = auditor.ListServices();
+        output.WriteLine($"Serviços: {services.Count}; alteráveis: {string.Join(", ", services.Where(s => s.CanSetManual).Select(s => s.Info.Name))}");
+        output.WriteLine($"Tarefas de atualizador: {string.Join(", ", auditor.ListUpdaterTasks().Select(t => t.Task.Path))}");
+
+        services.Should().NotBeEmpty();
+        services.Where(s => s.IsMicrosoft).Should().OnlyContain(s => !s.CanSetManual);
+        services.Where(s => s.CanSetManual).Select(s => s.Info.Name)
+            .Should().BeSubsetOf(Core.Services.ServiceAuditor.ServiceAllowlist.Keys);
+    }
+
+    [Fact]
     public void Catalog_IsAppliedAndDescribeChanges_AreReadOnly()
     {
         var catalog = new TweakCatalog(new ReadOnlyRegistryGuard(new WindowsRegistry()), new ReadOnlyProcessGuard(new ProcessRunner()));

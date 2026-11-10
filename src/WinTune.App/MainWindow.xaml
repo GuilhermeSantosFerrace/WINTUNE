@@ -345,6 +345,54 @@
         </DockPanel>
       </TabItem>
 
+      <!-- ====================== Serviços ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Services}" AutomationProperties.Name="Serviços e tarefas" DataContext="{Binding ServicesTab}">
+        <Grid Margin="12">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <StackPanel Grid.Row="0">
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Auditoria conservadora: serviços da Microsoft e não classificados são somente leitura. Só atualizadores de terceiros conhecidos podem ir de Automático para Manual. Nenhum serviço é parado à força." />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="_Atualizar" Command="{Binding RefreshCommand}" AutomationProperties.Name="Atualizar auditoria de serviços" />
+              <Button Content="Passar para _Manual" Command="{Binding SetManualCommand}" AutomationProperties.Name="Passar serviços selecionados para Manual" />
+              <Button Content="_Restaurar selecionados" Command="{Binding RestoreServicesCommand}" AutomationProperties.Name="Restaurar tipo de inicialização original" />
+            </StackPanel>
+            <TextBlock Text="{Binding Status}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+          </StackPanel>
+          <DataGrid Grid.Row="1" ItemsSource="{Binding Services}" AutomationProperties.Name="Serviços">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="Sel." Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+              <DataGridTextColumn Header="Serviço" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+              <DataGridTextColumn Header="Nome de exibição" Binding="{Binding DisplayName}" IsReadOnly="True" Width="2*" />
+              <DataGridTextColumn Header="Estado" Binding="{Binding State}" IsReadOnly="True" Width="Auto" />
+              <DataGridTextColumn Header="Inicialização" Binding="{Binding StartMode}" IsReadOnly="True" Width="*" />
+              <DataGridTextColumn Header="Fabricante" Binding="{Binding Publisher}" IsReadOnly="True" Width="*" />
+              <DataGridTextColumn Header="CPU" Binding="{Binding Cpu}" IsReadOnly="True" Width="Auto" />
+              <DataGridTextColumn Header="Memória" Binding="{Binding Memory}" IsReadOnly="True" Width="Auto" />
+              <DataGridTextColumn Header="Observação" Binding="{Binding Note}" IsReadOnly="True" Width="2*" />
+            </DataGrid.Columns>
+          </DataGrid>
+          <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,8">
+            <TextBlock Text="Tarefas de atualizadores de terceiros" Style="{StaticResource SectionHeader}" Margin="0,0,16,0" VerticalAlignment="Center" />
+            <Button Content="Desa_bilitar" Command="{Binding DisableTasksCommand}" AutomationProperties.Name="Desabilitar tarefas selecionadas" />
+            <Button Content="Reab_ilitar" Command="{Binding EnableTasksCommand}" AutomationProperties.Name="Reabilitar tarefas desabilitadas pelo WinTune" />
+          </StackPanel>
+          <DataGrid Grid.Row="3" ItemsSource="{Binding Tasks}" AutomationProperties.Name="Tarefas de atualizadores">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="Sel." Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+              <DataGridTextColumn Header="Tarefa" Binding="{Binding Path}" IsReadOnly="True" Width="3*" />
+              <DataGridTextColumn Header="Autor" Binding="{Binding Author}" IsReadOnly="True" Width="*" />
+              <DataGridTextColumn Header="Estado" Binding="{Binding State}" IsReadOnly="True" Width="*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />

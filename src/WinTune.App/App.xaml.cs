@@ -114,18 +114,22 @@ public partial class App : Application
         }
 
         var catalog = new TweakCatalog(registry, runner);
+        var tasks = new ScheduledTasks();
+        var serviceControl = new ServiceControl(wmi, registry);
+        var usage = new Platform.Sensors.ProcessUsageReader(wmi);
         return new AppServices
         {
-            Startup = new Core.Startup.StartupManager(registry, fs, env, new ScheduledTasks()),
+            Startup = new Core.Startup.StartupManager(registry, fs, env, tasks),
+            ServiceAuditor = new Core.Services.ServiceAuditor(serviceControl, tasks, fs, env, usage),
             SensorsFactory = () => new Platform.Sensors.UserModeSensors(wmi),
-            ProcessUsage = new Platform.Sensors.ProcessUsageReader(wmi),
+            ProcessUsage = usage,
             Registry = registry,
             Runner = runner,
             Wmi = wmi,
             FileSystem = fs,
             Environment = env,
             Clock = clock,
-            Services = new ServiceControl(wmi, registry),
+            Services = serviceControl,
             Processes = new ProcessList(),
             Shell = new ShellLauncher(),
             Backup = backup,

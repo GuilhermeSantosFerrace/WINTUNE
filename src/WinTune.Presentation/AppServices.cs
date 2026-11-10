@@ -1,5 +1,6 @@
 using WinTune.Core.Backup;
 using WinTune.Core.Games;
+using WinTune.Core.Services;
 using WinTune.Core.Startup;
 using WinTune.Core.Tweaks;
 using WinTune.Platform.Abstractions;
@@ -59,8 +60,12 @@ public sealed class AppServices
     /// </summary>
     public Func<string, Tweak?>? ResolveTweak { get; init; }
 
-    /// <summary>Resolve um ID de backup para o ajuste capaz de revertê-lo (catálogo, inicialização e extras).</summary>
-    public Tweak? Resolve(string id) => Catalog.Find(id) ?? Startup?.Resolve(id) ?? ResolveTweak?.Invoke(id);
+    /// <summary>Auditor de serviços e tarefas.</summary>
+    public ServiceAuditor? ServiceAuditor { get; init; }
+
+    /// <summary>Resolve um ID de backup para o ajuste capaz de revertê-lo (catálogo, inicialização, serviços e extras).</summary>
+    public Tweak? Resolve(string id) =>
+        Catalog.Find(id) ?? Startup?.Resolve(id) ?? ServiceAuditor?.Resolve(id) ?? ResolveTweak?.Invoke(id);
 }
 
 /// <summary>Diálogos (implementado com MessageBox no App e com respostas fixas nos testes).</summary>

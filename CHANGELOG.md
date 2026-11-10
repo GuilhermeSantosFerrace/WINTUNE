@@ -45,3 +45,5 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 10: benchmark antes/depois por jogo: rodadas a partir das sessões de telemetria, importação opcional de CSV do PresentMon
   (1.x/2.x), FPS médio/1% low/desvio do frametime, comparador com descarte da 1ª rodada, mínimo de 3 rodadas e teste de
   relevância; sessões em `%LOCALAPPDATA%\WinTune\sessions`.
+- Fase 11: auditoria de serviços (estado, inicialização, fabricante, CPU/RAM do processo) e de tarefas de atualizadores;
+  allowlist de atualizadores de terceiros para Automático → Manual e desabilitar tarefas, reversível, sem parar serviços.
