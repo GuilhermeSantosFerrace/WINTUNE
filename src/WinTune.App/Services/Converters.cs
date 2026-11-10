@@ -37,6 +37,16 @@ public sealed class SeriesToPointsConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => DependencyProperty.UnsetValue;
 }
 
+/// <summary>RadioButton ligado a um texto: verdadeiro quando o valor é igual ao parâmetro.</summary>
+public sealed class EqualsConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+        string.Equals(value?.ToString(), parameter?.ToString(), StringComparison.Ordinal);
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+        value is true ? parameter : Binding.DoNothing;
+}
+
 /// <summary>Inverte um booleano.</summary>
 public sealed class InverseBoolConverter : IValueConverter
 {

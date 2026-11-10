@@ -71,4 +71,10 @@ public interface IDialogService
 
     /// <summary>Mostra uma informação.</summary>
     void Inform(string title, string message);
+
+    /// <summary>Escolhe um arquivo para abrir (null = cancelado).</summary>
+    string? PickOpenFile(string title, string filter);
+
+    /// <summary>Escolhe onde salvar um arquivo (null = cancelado).</summary>
+    string? PickSaveFile(string title, string filter, string defaultName);
 }

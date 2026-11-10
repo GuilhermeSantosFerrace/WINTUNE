@@ -53,7 +53,11 @@ public sealed partial class MainViewModel : ObservableObject
         Telemetry = new TelemetryViewModel(services);
         Startup = new StartupViewModel(services, dialogs, AddLog);
         Cleanup = new CleanupViewModel(services, dialogs, AddLog);
+        Benchmark = new BenchmarkViewModel(services, dialogs, AddLog, Telemetry);
     }
+
+    /// <summary>Aba Benchmark.</summary>
+    public BenchmarkViewModel Benchmark { get; }
 
     /// <summary>Aba Limpeza.</summary>
     public CleanupViewModel Cleanup { get; }

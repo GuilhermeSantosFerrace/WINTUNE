@@ -38,6 +38,10 @@ public class XamlSmokeTests
         public void Inform(string title, string message)
         {
         }
+
+        public string? PickOpenFile(string title, string filter) => null;
+
+        public string? PickSaveFile(string title, string filter, string defaultName) => null;
     }
 
     [Fact]

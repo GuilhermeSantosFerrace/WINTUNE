@@ -17,6 +17,18 @@ public sealed class MessageBoxDialogService : IDialogService
 
     public void Inform(string title, string message) =>
         MessageBox.Show(Application.Current?.MainWindow!, message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+
+    public string? PickOpenFile(string title, string filter)
+    {
+        var dlg = new Microsoft.Win32.OpenFileDialog { Title = title, Filter = filter, CheckFileExists = true, Multiselect = false };
+        return dlg.ShowDialog(Application.Current?.MainWindow) == true ? dlg.FileName : null;
+    }
+
+    public string? PickSaveFile(string title, string filter, string defaultName)
+    {
+        var dlg = new Microsoft.Win32.SaveFileDialog { Title = title, Filter = filter, FileName = defaultName, OverwritePrompt = true };
+        return dlg.ShowDialog(Application.Current?.MainWindow) == true ? dlg.FileName : null;
+    }
 }
 
 /// <summary>Seleciona tema claro/escuro (configuração do Windows) ou alto contraste.</summary>

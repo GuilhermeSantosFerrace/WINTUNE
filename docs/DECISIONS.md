@@ -240,3 +240,17 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
     a Lixeira só adiaria a liberação de espaço. A UI diz explicitamente que a limpeza é irreversível e não entra em "Desfazer tudo".
   - Cache do Otimização de Entrega e caches de shader vêm desmarcados; shader com aviso de recompilação.
 - **Medição real (somente prévia, sem apagar):** 3.138 arquivos / 1,1 GB candidatos em `%TEMP%`; 196 em uso e 34 recentes ignorados.
+
+## D-029 — Benchmark: método estatístico e fonte de frametime
+
+- **Fase:** 10
+- **Fonte de frametime:** somente CSV exportado do PresentMon (ferramenta externa, opcional), colunas `MsBetweenPresents` (1.x)
+  ou `FrameTime` (2.x), filtrando pela coluna `Application` com o executável do jogo. O WinTune não captura quadros.
+- **Métricas:** FPS médio = 1000 / frametime médio; 1% low = 1000 / percentil 99 do frametime; desvio padrão do frametime.
+  Telemetria: temperatura máx. da GPU, RAM máx., paginação média, uso médio da GPU.
+- **Rodadas (R7):** mínimo de 3 por condição; a 1ª de cada condição é descartada (shader/cache).
+- **Relevância:** uma diferença só conta se (a) a variação relativa ≥ limiar configurável (padrão 3%) **e** (b) a diferença das médias
+  for maior que 2 erros padrão combinados (`2·√(s²a/na + s²b/nb)`). Caso contrário: "sem diferença relevante".
+- **Sem frametime:** só telemetria; o veredito geral fica "dados insuficientes" (nenhum FPS é estimado).
+- **Jogos:** o relatório nunca mistura jogos; rodadas de jogos diferentes geram aviso.
+- **Persistência:** `%LOCALAPPDATA%\WinTune\sessions\*.json` (schema 1, até 10 MB; arquivos inválidos são ignorados e registrados).

@@ -4,6 +4,7 @@
   <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
   <svc:SeriesToPointsConverter x:Key="SeriesToPoints" Width="360" Height="80" Capacity="120" />
   <svc:InverseBoolConverter x:Key="InverseBool" />
+  <svc:EqualsConverter x:Key="EqualsConverter" />
 
   <Style x:Key="SectionHeader" TargetType="TextBlock">
     <Setter Property="FontSize" Value="16" />

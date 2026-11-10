@@ -23,6 +23,14 @@ internal sealed class FakeDialogs : IDialogService
     }
 
     public void Inform(string title, string message) => Infos.Add(title + ": " + message);
+
+    public string? OpenFile { get; set; }
+
+    public string? SaveFile { get; set; }
+
+    public string? PickOpenFile(string title, string filter) => OpenFile;
+
+    public string? PickSaveFile(string title, string filter, string defaultName) => SaveFile;
 }
 
 /// <summary>WMI que bloqueia até ser liberado (prova de que a análise não roda na thread chamadora).</summary>

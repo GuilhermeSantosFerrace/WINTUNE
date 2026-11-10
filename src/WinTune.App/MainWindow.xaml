@@ -296,6 +296,55 @@
         </DockPanel>
       </TabItem>
 
+      <!-- ====================== Benchmark ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Benchmark}" AutomationProperties.Name="Benchmark" DataContext="{Binding Benchmark}">
+        <DockPanel Margin="12">
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Para provar (ou desmentir) um ganho: grave pelo menos 3 rodadas ANTES e 3 DEPOIS do ajuste, no mesmo mapa/cenário. A 1ª rodada de cada condição é descartada (cache de shader). FPS só aparece se você importar o CSV do PresentMon (ferramenta externa opcional); sem ele, só a telemetria é comparada." />
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="{Binding PendingText}" TextWrapping="Wrap" Margin="0,0,0,8" AutomationProperties.LiveSetting="Polite" />
+                <WrapPanel>
+                  <TextBlock Text="Jogo:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                  <ComboBox ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}" Width="100" Margin="0,0,16,0" AutomationProperties.Name="Jogo da rodada" />
+                  <RadioButton GroupName="Cond" Content="A_ntes" IsChecked="{Binding Condition, Converter={StaticResource EqualsConverter}, ConverterParameter=antes}" AutomationProperties.Name="Condição antes" />
+                  <RadioButton GroupName="Cond" Content="De_pois" IsChecked="{Binding Condition, Converter={StaticResource EqualsConverter}, ConverterParameter=depois}" AutomationProperties.Name="Condição depois" />
+                  <Button Content="CSV do _PresentMon…" Command="{Binding PickCsvCommand}" AutomationProperties.Name="Escolher CSV do PresentMon" />
+                  <Button Content="_Salvar rodada" Style="{StaticResource PrimaryButton}" Command="{Binding SaveRunCommand}" AutomationProperties.Name="Salvar rodada" />
+                </WrapPanel>
+                <TextBlock Text="{Binding CsvPath}" Style="{StaticResource Secondary}" Margin="0,4,0,0" />
+              </StackPanel>
+            </Border>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="_Recarregar rodadas" Command="{Binding LoadCommand}" AutomationProperties.Name="Recarregar rodadas salvas" />
+              <TextBlock Text="Limiar (%):" VerticalAlignment="Center" Margin="0,0,8,0" />
+              <TextBox Width="50" Text="{Binding ThresholdPercent, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,8,0" AutomationProperties.Name="Limiar de diferença relevante em porcentagem" />
+              <Button Content="_Comparar antes × depois" Command="{Binding CompareCommand}" AutomationProperties.Name="Comparar antes e depois do jogo selecionado" />
+            </StackPanel>
+            <TextBlock Text="{Binding Verdict}" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,4" AutomationProperties.LiveSetting="Polite" />
+            <ItemsControl ItemsSource="{Binding Results}" Margin="0,0,0,8">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+          <DataGrid ItemsSource="{Binding Runs}" IsReadOnly="True" AutomationProperties.Name="Rodadas salvas">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Quando" Binding="{Binding When}" Width="*" />
+              <DataGridTextColumn Header="Jogo" Binding="{Binding Game}" Width="*" />
+              <DataGridTextColumn Header="Condição" Binding="{Binding Condition}" Width="*" />
+              <DataGridTextColumn Header="Duração" Binding="{Binding Duration}" Width="*" />
+              <DataGridTextColumn Header="FPS médio" Binding="{Binding Fps}" Width="2*" />
+              <DataGridTextColumn Header="GPU máx. °C" Binding="{Binding GpuTemp}" Width="*" />
+              <DataGridTextColumn Header="RAM máx." Binding="{Binding Ram}" Width="*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />
