@@ -40,6 +40,8 @@ public sealed class TweakCatalog
             GameDvrOff(registry),
             StartupDelay(registry),
             TransparencyOff(registry),
+            new PowerPlanTweak(runner),
+            new FlipModelUpgradeTweak(registry),
         ];
     }
 

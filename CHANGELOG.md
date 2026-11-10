@@ -24,3 +24,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   `RestorePointService` e `RegistryTweak` (rollback parcial, reversão segura contra drift, allowlist, modo simulação).
 - Fase 3: catálogo v1 (`game-mode`, `hags`, `gamedvr-off`, `startup-delay`, `transparency-off`), `RecommendationEngine`
   (foco × cenários × jogos, prioridade estática, "já aplicado") e `docs/TWEAKS.md` com fonte e rollback manual de cada ajuste.
+- Fase 4: `power-high` (`PowerPlanTweak`: parsing por GUID em qualquer idioma, fallback `/duplicatescheme`, detecção do plano
+  AMD Ryzen Balanced, reversão exata com allowlist e detecção de drift) e `flip-model-upgrade` (preserva as demais flags
+  de `DirectXUserGlobalSettings`).

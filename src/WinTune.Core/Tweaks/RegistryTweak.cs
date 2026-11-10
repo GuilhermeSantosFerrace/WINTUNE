@@ -168,9 +168,20 @@ public class RegistryTweak : Tweak
             return TweakResult.Skipped(Id, "Já aplicado; nada a fazer.");
         }
 
+        List<RegistryValue?> currents;
+        List<RegistryValue> desired;
+        try
+        {
+            currents = Settings.Select(Read).ToList();
+            desired = Settings.Select((s, i) => s.Desired(currents[i])).ToList();
+        }
+        catch (Exception ex) when (IsRecoverable(ex))
+        {
+            store.Journal("apply", Id, "failed", ex.Message);
+            return TweakResult.Failed(Id, ex.Message);
+        }
+
         var opId = store.BeginOperation(Id, "apply");
-        var currents = Settings.Select(Read).ToList();
-        var desired = Settings.Select((s, i) => s.Desired(currents[i])).ToList();
         var entries = Settings.Select((s, i) => new RegistryBackupEntry
         {
             Hive = s.Hive,

@@ -92,3 +92,38 @@ Convenções:
 - **Fonte:** Eleven Forum, [Enable or Disable Transparency Effects in Windows 11](https://www.elevenforum.com/t/enable-or-disable-transparency-effects-in-windows-11.1110/). Confiança: comunidade.
 - **Reverter sem o app:** Configurações > Personalização > Cores > Efeitos de transparência, ou
   `reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v EnableTransparency /t REG_DWORD /d 1 /f`.
+
+### `power-high`
+
+- **O que faz:** ativa o plano de energia Alto desempenho.
+- **Comando:** `powercfg /getactivescheme` (lê o GUID ativo por regex, independente do idioma) e
+  `powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c`. Se o plano não existir (comum no Windows 11),
+  `powercfg /duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c` cria uma cópia, que é ativada e, ao desfazer, apagada.
+- **Padrão do Windows:** plano Equilibrado (`381b4222-f694-41f0-9685-ff5bb260df2e`).
+- **Antes de oferecer:** se `powercfg /list` mostrar um plano com "Ryzen" no nome (plano "AMD Ryzen Balanced" do driver de
+  chipset), o ajuste vem desmarcado com explicação: o ganho tende a ser menor.
+- **Foco / cenários:** Jogos / Travadas, FPS baixo.
+- **Risco:** seguro (aumenta consumo em repouso). **Reinício:** não.
+- **Backup:** GUID anterior, GUID aplicado e GUID criado (se houver). Ao reverter, o GUID anterior só é restaurado se o
+  `powercfg /list` o reconhecer (allowlist); se o plano ativo foi trocado depois, há conflito e nada é alterado sem confirmação.
+- **Fonte:** Microsoft Learn, [Powercfg command-line options](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options)
+  (`/setactive`, `/duplicatescheme`, `/list`, `/getactivescheme`, `/delete`). Confiança: oficial.
+- **Reverter sem o app:** `powercfg /list` para ver os planos e `powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e`
+  (Equilibrado) ou o GUID anterior anotado no backup (`%ProgramData%\WinTune\backup.json`, chave `previousScheme`).
+
+### `flip-model-upgrade`
+
+- **O que faz:** liga "Otimizações para jogos em janela" (flip model) para jogos DirectX 10/11 em janela ou janela sem borda.
+- **Chave:** HKCU `Software\Microsoft\DirectX\UserGpuPreferences` → `DirectXUserGlobalSettings` (**REG_SZ**), adicionando ou
+  trocando a flag `SwapEffectUpgradeEnable=1;`. Outras flags da mesma string (`HighPerfAdapter=...;VRROptimizeEnable=...;AutoHDREnable=...;`)
+  são **preservadas** na aplicação e na reversão; ao desfazer, só a nossa flag volta ao valor original (ou é removida).
+  Se o valor existir com outro tipo, nada é alterado.
+- **Padrão do Windows:** depende da build; valor geralmente ausente.
+- **Aplicabilidade:** não afeta tela cheia exclusiva nem DirectX 12. Siege (DX12): praticamente não se aplica.
+  CS2: só se jogar em janela sem borda. Desmarcado por padrão.
+- **Risco:** seguro. **Reinício:** não (reabrir o jogo).
+- **Fonte:** Microsoft DevBlog, [Updates in Graphics and Gaming](https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/)
+  e Suporte Microsoft, [Otimizações para jogos em janela](https://support.microsoft.com/de-de/windows/hardware/display-graphics/optimizations-for-windowed-games-in-windows-11) (V11, oficial);
+  formato da string: Eleven Forum (V10, comunidade).
+- **Reverter sem o app:** Configurações > Sistema > Tela > Elementos gráficos > Alterar configurações gráficas padrão >
+  Otimizações para jogos em janela, ou editar a string no `regedit` removendo `SwapEffectUpgradeEnable=1;`.
