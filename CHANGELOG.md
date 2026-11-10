@@ -22,3 +22,5 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 2: domínio (`Focus`, `Scenario`, `GameTarget`, `Risk`, `Severity`, `Finding`, `TweakResult`), contrato `Tweak`,
   `BackupStore` (escrita atômica, schema 1, journal, intenções de operação, arquivo corrompido movido para `.corrupt`),
   `RestorePointService` e `RegistryTweak` (rollback parcial, reversão segura contra drift, allowlist, modo simulação).
+- Fase 3: catálogo v1 (`game-mode`, `hags`, `gamedvr-off`, `startup-delay`, `transparency-off`), `RecommendationEngine`
+  (foco × cenários × jogos, prioridade estática, "já aplicado") e `docs/TWEAKS.md` com fonte e rollback manual de cada ajuste.

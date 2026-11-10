@@ -120,3 +120,23 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Decisão:** `Checkpoint-Computer` via `System32\WindowsPowerShell\v1.0\powershell.exe` com comando fixo (sem entrada do usuário).
   Saída contendo "1440" com código 0 = limite de 24 h (V14); código ≠ 0 = falha (provável Proteção do Sistema desligada, V15).
   Nenhum dos dois bloqueia a aplicação: o backup JSON continua valendo (R5).
+
+## D-016 — `startup-delay` grava também `WaitForIdleState=0`
+
+- **Fase:** 3
+- **Contexto:** em builds recentes do Windows 11 o Explorer passou a esperar o sistema ficar ocioso; `StartupDelayInMSec=0`
+  sozinho deixou de ter efeito (Microsoft Q&A, ver `docs/TWEAKS.md`).
+- **Decisão:** o ajuste controla os dois valores na mesma chave `Serialize`; ambos são revertidos para o estado original.
+
+## D-017 — `power-high` e `flip-model-upgrade` nascem na Fase 4
+
+- **Fase:** 3
+- **Contexto:** lacuna 6 da seção 10.2.
+- **Decisão:** padronizado: ambos são implementados na Fase 4.
+
+## D-018 — Prioridade estática e "impacto estimado"
+
+- **Fase:** 3
+- **Contexto:** lacuna 4 da seção 10.2 (impacto nunca definido).
+- **Decisão:** cada ajuste tem uma prioridade fixa (tabela em `docs/TWEAKS.md`), sem prometer ganho percentual.
+  Ordenação: prioridade desc, depois nome.
