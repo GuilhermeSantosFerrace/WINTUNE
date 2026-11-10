@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -9,6 +9,13 @@
     <RootNamespace>WinTune.App</RootNamespace>
     <AssemblyName>WinTune</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Publicação single-file: as bibliotecas nativas do WPF vão dentro do executável. -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishDocumentationFiles>false</PublishDocumentationFiles>
+    <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
+    <Title>WinTune</Title>
+    <Description>Diagnóstico e ajustes seguros e reversíveis para Windows 11</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Aplicativo (não biblioteca): XML docs opcionais em code-behind. -->
     <!-- WFAC010: analisador do WinForms sobre DPI no manifest; não se aplica a apps WPF (o WPF usa o manifest para DPI). -->

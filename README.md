@@ -1,86 +1,101 @@
 # WinTune
 
-Aplicativo desktop para **Windows 11** que diagnostica gargalos de desempenho e aplica ajustes
-**seguros e reversíveis**, sem descaracterizar o sistema. Todo ajuste guarda o estado original,
-explica o que muda e por quê, e pode ser desfeito.
+Aplicativo desktop para **Windows 11** que diagnostica gargalos de desempenho e aplica ajustes **seguros e reversíveis**,
+sem descaracterizar o sistema. Feito para um PC de jogos/trabalho (calibrado para Ryzen 7 5700X3D + RTX 4070 Super + 16 GB),
+mas funciona em qualquer PC com Windows 11.
 
-> Estado atual: **Fase 0 (fundação do repositório)**. Ainda não há ajustes nem diagnóstico.
-> O plano completo está em [`WINTUNE_BUILD_SPEC.md`](WINTUNE_BUILD_SPEC.md).
+- Cada ajuste mostra **o que muda, onde, por quê, o risco e se exige reinício**, e guarda o estado original.
+- **Diagnóstico antes de mudança:** problemas de hardware/BIOS (EXPO/XMP, dual channel, Resizable BAR, monitor em 60 Hz…) são
+  apontados, não "consertados" com placebo.
+- **Sem promessas:** o Benchmark compara antes × depois e diz "sem diferença relevante" quando for o caso.
+- **Nada sai do seu PC:** sem rede, sem telemetria própria.
+- **Anti-cheat:** o WinTune nunca toca no processo nem nos arquivos do Rainbow Six Siege ou do CS2; sensores só em modo usuário.
 
-## Estrutura do projeto
-
-```
-WinTune/
-├── WinTune.sln
-├── global.json               # fixa o SDK .NET 8
-├── Directory.Build.props     # Nullable, LangVersion 12, warnings como erro
-├── Directory.Packages.props  # versões exatas das dependências
-├── build.ps1                 # build, test, run, publish, clean
-├── docs/
-│   └── DECISIONS.md          # decisões e ambiguidades resolvidas
-├── src/
-│   ├── WinTune.Core/         # domínio, sem UI e sem acesso direto ao Windows
-│   ├── WinTune.Platform/     # adaptadores do Windows atrás de interfaces
-│   └── WinTune.App/          # interface WPF (MVVM a partir da Fase 6)
-├── tests/
-│   ├── WinTune.Core.Tests/
-│   └── WinTune.Platform.Tests/
-└── .github/workflows/ci.yml  # build + testes em windows-latest
-```
-
-## Pré-requisitos
-
-- Windows 11 (x64).
-- [SDK .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) na versão indicada em `global.json` (8.0.428 ou patch superior).
-  Sem privilégio de administrador, é possível instalar por usuário:
-
-  ```powershell
-  Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
-  .\dotnet-install.ps1 -Channel 8.0 -InstallDir "$env:LOCALAPPDATA\Microsoft\dotnet"
-  ```
-
-  O `build.ps1` detecta e usa automaticamente essa instalação.
+Plano completo: [`WINTUNE_BUILD_SPEC.md`](WINTUNE_BUILD_SPEC.md) · Catálogo: [`docs/TWEAKS.md`](docs/TWEAKS.md) ·
+Segurança e recuperação: [`docs/SAFETY.md`](docs/SAFETY.md) · Decisões: [`docs/DECISIONS.md`](docs/DECISIONS.md) ·
+Arquitetura: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Telas: [`docs/UX.md`](docs/UX.md)
 
 ## Instalar
+
+1. Baixe `WinTune-Setup-<versão>.exe` (ou a versão portátil `WinTune-<versão>-portable.exe`) na página
+   [Releases](https://github.com/GuilhermeSantosFerrace/WINTUNE/releases). Confira o hash em `SHA256SUMS.txt`.
+2. Execute o instalador. Como o executável **não é assinado digitalmente**, o SmartScreen pode avisar
+   ("O Windows protegeu o computador"): clique em **Mais informações > Executar assim mesmo** se o hash conferir.
+3. O WinTune pede permissão de administrador (UAC) ao abrir, porque altera HKLM e planos de energia.
+
+## Usar
+
+1. **Otimizar:** escolha o foco (Trabalho, Jogos, Os dois), os jogos (Siege/CS2) e os cenários com problema; clique em **Analisar**.
+2. Revise a lista. Itens experimentais (HAGS, flip model) e cosméticos vêm desmarcados; "Já aplicado" significa nada a fazer.
+3. **Aplicar selecionados** mostra a prévia exata (valor atual → novo), cria um ponto de restauração e aplica.
+4. **Diagnóstico / Jogos:** avisos de hardware e guias por jogo (o app não altera BIOS nem arquivos de jogo).
+5. **Telemetria:** monitor ao vivo e "sessão de diagnóstico" que diz qual componente limita (GPU, CPU, RAM, disco, térmico).
+6. **Benchmark:** grave ≥ 3 rodadas antes e ≥ 3 depois (mesmo mapa/cenário), opcionalmente com o CSV do
+   [PresentMon](https://github.com/GameTechDev/PresentMon), e compare.
+7. **Inicialização / Serviços / Limpeza:** conservadores; itens da Microsoft e de segurança ficam protegidos; a limpeza
+   tem prévia obrigatória e **não é reversível**.
+8. **Perfis e modo jogo:** salve seleções; o modo jogo automático (opcional) aplica ajustes ao abrir o jogo e restaura ao fechar.
+9. **Desfazer tudo** restaura o estado original de tudo que o WinTune alterou. **Histórico** mostra cada operação e exporta
+   um relatório local (Markdown/JSON) sem dados pessoais.
+
+## Recuperação
+
+- Dentro do app: **Desfazer tudo**.
+- Pelo desinstalador: ele oferece "Desfazer tudo" antes de remover.
+- Sem o app: siga [`docs/SAFETY.md`](docs/SAFETY.md) (comandos `reg`, `powercfg`, `sc`, `schtasks`); os valores originais
+  estão em `%ProgramData%\WinTune\backup.json`. Último recurso: `rstrui.exe` (ponto de restauração).
+- Linha de comando: `WinTune.exe --revert-all` (adicione `--quiet` para não mostrar a janela de resumo).
+
+## Desenvolver
+
+Pré-requisitos: Windows 11 x64 e [SDK .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) (versão em `global.json`).
+Sem administrador, dá para instalar por usuário:
+
+```powershell
+Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
+.\dotnet-install.ps1 -Channel 8.0 -InstallDir "$env:LOCALAPPDATA\Microsoft\dotnet"
+```
 
 ```powershell
 git clone https://github.com/GuilhermeSantosFerrace/WINTUNE.git
 cd WINTUNE
-.\build.ps1 build
-```
-
-## Rodar
-
-```powershell
-.\build.ps1 run
-```
-
-## Testar
-
-```powershell
-.\build.ps1 test
-```
-
-Testes de integração (que tocam o Windows real) são marcados com `[Trait("Category","Integration")]`
-e ficam fora do CI e do alvo `test`. Rode-os apenas em VM ou máquina descartável.
-
-## Publicar
-
-```powershell
-.\build.ps1 publish   # gera .\publish\WinTune.exe (single-file, self-contained, win-x64)
-```
-
-## Limpar
-
-```powershell
+.\build.ps1 build        # compila (analisadores como erro)
+.\build.ps1 test         # testes de unidade (sem Category=Integration)
+.\build.ps1 run          # executa o app (UAC)
+.\build.ps1 publish      # .\publish\WinTune.exe (single-file, self-contained, win-x64)
+.\build.ps1 installer -Version 1.0.0   # instalador em .\artifacts (requer Inno Setup 6)
 .\build.ps1 clean
 ```
 
-## Princípios
+Testes de integração (`[Trait("Category","Integration")]`) leem o Windows real com guardas que **proíbem escrita**; rode só
+localmente: `dotnet test --filter Category=Integration`.
 
-1. Reversibilidade total.
-2. Transparência: cada ajuste mostra o que muda, onde, por que, risco e se exige reinício.
-3. Diagnóstico antes de mudança: gargalos de hardware/BIOS são apontados, não "consertados".
-4. Nada de desativar Defender, Windows Update, UAC, VBS/HVCI ou telemetria do Windows.
-5. Sem promessas de ganho: medir antes e depois.
-6. Nenhum contato com o processo ou arquivos dos jogos (anti-cheat).
+### Estrutura
+
+```
+src/
+  WinTune.Platform.Abstractions/  interfaces para tudo que toca o Windows
+  WinTune.Platform/               implementações reais (registro, processos, WMI, SCM, PDH/NVML, Agendador)
+  WinTune.Core/                   domínio, ajustes, backup, diagnóstico, telemetria, benchmark, ...
+  WinTune.Presentation/           ViewModels (MVVM), testáveis sem janela
+  WinTune.App/                    WPF (XAML, temas, bandeja)
+tests/                            Core, Platform, Presentation, App (XAML) e TestDoubles (fakes)
+installer/                        Inno Setup
+docs/                             DECISIONS, TWEAKS, SAFETY, ARCHITECTURE, UX
+```
+
+## Perguntas frequentes
+
+**Vou ganhar quantos FPS?** Não há número prometido. Em Siege e CS2 o que mais pesa costuma ser memória (EXPO/XMP, dual
+channel, capacidade) e apps em segundo plano. Meça com o Benchmark.
+
+**O app pode me banir no Siege/CS2?** O WinTune não abre, lê nem altera o processo ou os arquivos dos jogos e não carrega
+drivers de kernel. Ainda assim, nenhum fabricante de anti-cheat certifica ferramentas de terceiros; a política do Siege pode mudar.
+
+**Por que o HAGS vem desmarcado?** O ganho varia por driver/jogo e pode piorar travadas; teste com o Benchmark.
+
+**Desativar a Segurança baseada em virtualização dá FPS?** Às vezes alguns %, mas é proteção de segurança: o WinTune só informa.
+
+**A limpeza pode ser desfeita?** Não. Por isso há prévia obrigatória e os caches de shader vêm desmarcados.
+
+**Funciona no Windows 10?** Não é suportado; o app avisa ao abrir em builds anteriores ao Windows 11.

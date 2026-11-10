@@ -43,6 +43,12 @@ jobs:
           Write-Host ("Cobertura de linhas do WinTune.Core: {0:P1}" -f $rate)
           if ($rate -lt 0.80) { throw "Cobertura abaixo de 80%." }
 
+      - name: Publicar e compilar o instalador (validação)
+        shell: pwsh
+        run: |
+          dotnet publish src/WinTune.App/WinTune.App.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish
+          ./installer/build-installer.ps1 -Version "0.0.0-ci"
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

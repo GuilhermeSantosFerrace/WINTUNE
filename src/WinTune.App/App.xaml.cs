@@ -35,8 +35,8 @@ public partial class App : Application, IDisposable
         _mutex = new Mutex(initiallyOwned: true, MutexName, out var createdNew);
         if (!createdNew)
         {
-            MessageBox.Show("O WinTune já está aberto.", "WinTune", MessageBoxButton.OK, MessageBoxImage.Information);
-            Shutdown(0);
+            MessageBox.Show("O WinTune já está aberto. Feche-o antes de continuar.", "WinTune", MessageBoxButton.OK, MessageBoxImage.Information);
+            Shutdown(3);
             return;
         }
 
@@ -45,6 +45,21 @@ public partial class App : Application, IDisposable
         log.LogInformation("WinTune iniciado. Versão {Version}", typeof(App).Assembly.GetName().Version);
 
         var services = Compose(log, out var startupWarnings);
+
+        // Modo sem interface usado pelo desinstalador: desfaz tudo e sai (0 = tudo revertido; 2 = pendências).
+        if (e.Args.Any(a => string.Equals(a, "--revert-all", StringComparison.OrdinalIgnoreCase)))
+        {
+            var report = UndoService.RevertAll(services);
+            log.LogInformation("--revert-all: {Summary}", report.Summary);
+            if (!e.Args.Any(a => string.Equals(a, "--quiet", StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show(report.Summary, "WinTune — Desfazer tudo", MessageBoxButton.OK,
+                    report.AllReverted ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            }
+
+            Shutdown(report.AllReverted ? 0 : 2);
+            return;
+        }
         Services = services;
         ThemeManager.Apply(this, services.Registry);
 

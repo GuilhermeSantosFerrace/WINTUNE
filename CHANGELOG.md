@@ -7,8 +7,18 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Pendente para 1.0.0
+
+- Executar o roteiro manual em VM Windows 11 (`docs/SAFETY.md`, seção 5): instalação limpa, recuperação sem o app,
+  queda no meio de "Aplicar", inicialização conferida no Gerenciador de Tarefas, desinstalação sem resíduos.
+
+## [1.0.0-rc.1] - 2026-11-10
+
 ### Adicionado
 
+- Fase 15: publicação single-file self-contained (win-x64, comprimida), instalador Inno Setup com "Desfazer tudo" antes de
+  desinstalar, modo `WinTune.exe --revert-all [--quiet]`, workflow de release por tag (instalador, portátil e `SHA256SUMS.txt`),
+  README final (instalação, uso, recuperação, FAQ).
 - Fase 0: estrutura da solução (`WinTune.Core`, `WinTune.Platform`, `WinTune.App`, projetos de teste).
 - `global.json` fixando o SDK .NET 8.0.428; `Directory.Build.props` com `Nullable`, `LangVersion=12` e warnings como erro.
 - `Directory.Packages.props` com versões exatas de dependências.

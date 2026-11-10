@@ -8,6 +8,7 @@
       test     Executa os testes de unidade (exclui Category=Integration).
       run      Executa o aplicativo WPF.
       publish  Gera executável single-file self-contained para win-x64 em .\publish.
+      installer Publica e compila o instalador Inno Setup em .\artifacts (requer Inno Setup 6).
       clean    Remove bin/, obj/, publish/ e TestResults/.
 
 .EXAMPLE
@@ -17,11 +18,15 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('build', 'test', 'run', 'publish', 'clean')]
+    [ValidateSet('build', 'test', 'run', 'publish', 'installer', 'clean')]
     [string]$Target = 'build',
 
     [ValidateSet('Debug', 'Release')]
-    [string]$Configuration = 'Release'
+    [string]$Configuration = 'Release',
+
+    # Versão do instalador (alvo "installer").
+    [ValidatePattern('^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$')]
+    [string]$Version = '1.0.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -62,6 +67,11 @@ switch ($Target) {
     'publish' {
         Invoke-Dotnet @('publish', $appProject, '-c', 'Release', '-r', 'win-x64', '--self-contained',
             '-p:PublishSingleFile=true', '-o', $publishDir)
+    }
+    'installer' {
+        Invoke-Dotnet @('publish', $appProject, '-c', 'Release', '-r', 'win-x64', '--self-contained',
+            '-p:PublishSingleFile=true', '-o', $publishDir)
+        & (Join-Path $root 'installer\build-installer.ps1') -Version $Version
     }
     'clean' {
         Get-ChildItem -Path $root -Directory -Recurse -Include 'bin', 'obj', 'TestResults' -ErrorAction SilentlyContinue |

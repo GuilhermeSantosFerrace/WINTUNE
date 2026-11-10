@@ -7,8 +7,13 @@ using Xunit.Abstractions;
 
 namespace WinTune.Platform.Tests;
 
+/// <summary>Coleção sem paralelismo: a medição de overhead usa a CPU do processo inteiro.</summary>
+[CollectionDefinition("Overhead", DisableParallelization = true)]
+public sealed class OverheadCollection;
+
 /// <summary>Sensores reais (somente leitura) e medição de overhead. Fora do CI.</summary>
 [Trait("Category", "Integration")]
+[Collection("Overhead")]
 public class SensorIntegrationTests(ITestOutputHelper output)
 {
     [Fact]

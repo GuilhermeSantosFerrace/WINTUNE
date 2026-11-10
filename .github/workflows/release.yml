@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET (versão do global.json)
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Versão a partir da tag
+        id: version
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}".TrimStart('v')
+          if ($v -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') { throw "Tag fora do SemVer: $v" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Testes
+        run: dotnet test WinTune.sln -c Release --filter "Category!=Integration"
+
+      - name: Publicar (single-file, self-contained, win-x64)
+        run: dotnet publish src/WinTune.App/WinTune.App.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:Version=${{ steps.version.outputs.version }} -o publish
+
+      - name: Inno Setup
+        shell: pwsh
+        run: ./installer/build-installer.ps1 -Version "${{ steps.version.outputs.version }}"
+
+      - name: Hashes
+        shell: pwsh
+        run: |
+          Get-ChildItem artifacts/*.exe, publish/WinTune.exe | ForEach-Object {
+            "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name
+          } | Set-Content artifacts/SHA256SUMS.txt
+          Copy-Item publish/WinTune.exe artifacts/WinTune-${{ steps.version.outputs.version }}-portable.exe
+
+      - name: Criar release no GitHub
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = "${{ steps.version.outputs.version }}"
+          $pre = if ($v -match '-') { '--prerelease' } else { '' }
+          gh release create "${{ github.ref_name }}" artifacts/* --title "WinTune $v" --notes-file CHANGELOG.md $pre

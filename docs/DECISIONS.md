@@ -315,3 +315,28 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Fase:** 14
 - **Decisão:** nenhuma API de rede no código (teste `ArchitectureTests.NoNetworkApis`). A verificação de atualização opt-in
   (Fase 15) **não** foi implementada; a verificação por firewall/Monitor de Recursos está no roteiro manual.
+
+## D-035 — Empacotamento: Inno Setup, single-file comprimido, sem assinatura
+
+- **Fase:** 15
+- **Instalador:** **Inno Setup 6** (não MSIX). Motivo: o app exige `requireAdministrator`, escreve em HKLM/ProgramData e
+  usa um desinstalador com lógica própria ("Desfazer tudo" antes de remover); MSIX roda em contêiner com virtualização de
+  registro/arquivos e restrições a apps elevados, o que conflita com o propósito do app.
+- **Desinstalador:** pergunta se deve rodar `WinTune.exe --revert-all`. Se tudo for revertido, apaga `%ProgramData%\WinTune`;
+  se não, mantém o backup para recuperação manual e avisa. Dados pessoais (perfis, sessões, logs) só são apagados com confirmação.
+- **Executável:** `dotnet publish -r win-x64 --self-contained -p:PublishSingleFile=true`, com bibliotecas nativas do WPF
+  embutidas e compressão (≈ 69 MB). Símbolos embutidos (`DebugType=embedded`) e sem XML docs no pacote.
+- **Assinatura:** não há certificado; o SmartScreen avisa na primeira execução (documentado no README). Os releases publicam
+  `SHA256SUMS.txt`.
+- **CI:** o instalador é compilado a cada push (validação do script). No runner, se o ISCC não existir, instala
+  `innosetup` 6.4.3 via Chocolatey (versão fixa). Localmente o Inno Setup não estava instalado; a compilação do script foi
+  validada no CI.
+- **Verificação de atualização opt-in:** não implementada (o app continua sem nenhuma chamada de rede).
+
+## D-036 — Versão 1.0.0-rc.1 em vez de 1.0.0
+
+- **Fase:** 15
+- **Contexto:** o aceite da Fase 15 exige instalação limpa, uso completo e desinstalação sem resíduos numa VM Windows 11, e a
+  Fase 14 exige o roteiro manual de recuperação em VM. Isso não pôde ser executado no ambiente de desenvolvimento.
+- **Decisão:** publicar a tag `v1.0.0-rc.1` (pré-release). A `v1.0.0` deve ser criada depois de concluir o roteiro de
+  `docs/SAFETY.md` (seção 5).

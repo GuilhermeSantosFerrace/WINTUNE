@@ -11,8 +11,9 @@
     <!-- Fase 14: conjunto "Recommended" dos analisadores .NET como erro no código de produção (src/). -->
     <AnalysisMode Condition="$(MSBuildProjectDirectory.Contains('\src\'))">Recommended</AnalysisMode>
     <Deterministic>true</Deterministic>
+    <DebugType Condition="'$(Configuration)' == 'Release'">embedded</DebugType>
 
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <Company>WinTune</Company>
     <Product>WinTune</Product>
     <Copyright>Copyright (c) WinTune contributors</Copyright>
