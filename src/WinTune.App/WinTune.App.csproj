@@ -6,11 +6,18 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WinTune.App</RootNamespace>
     <AssemblyName>WinTune</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Aplicativo (não biblioteca): XML docs opcionais em code-behind. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WinTune.Core\WinTune.Core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTune.Presentation\WinTune.Presentation.csproj" />
     <ProjectReference Include="..\WinTune.Platform\WinTune.Platform.csproj" />
   </ItemGroup>
 

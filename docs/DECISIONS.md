@@ -140,3 +140,43 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Contexto:** lacuna 4 da seção 10.2 (impacto nunca definido).
 - **Decisão:** cada ajuste tem uma prioridade fixa (tabela em `docs/TWEAKS.md`), sem prometer ganho percentual.
   Ordenação: prioridade desc, depois nome.
+
+## D-019 — ViewModels em `WinTune.Presentation` (net8.0)
+
+- **Fase:** 6
+- **Decisão:** ViewModels (CommunityToolkit.Mvvm 8.2.2) ficam numa biblioteca sem WPF, testada por `WinTune.Presentation.Tests`
+  sem janela. `WinTune.App` contém só XAML, tema, diálogos e composição. `WinTune.App.Tests` carrega a XAML real numa thread
+  STA e falha em qualquer erro de binding.
+
+## D-020 — App inteiro elevado (por enquanto) em vez de UI + helper elevado
+
+- **Fase:** 6
+- **Contexto:** a seção 2 prefere UI sem elevação + helper elevado de vida curta (R3).
+- **Decisão:** manter o app inteiro com `requireAdministrator` nesta versão.
+- **Motivo:** um helper elevado exige um canal local autenticado (named pipe com ACL e verificação do processo cliente), que é
+  uma superfície de ataque própria e precisa de testes específicos; para um app pessoal de uso pontual, o risco do canal mal
+  feito é maior que o benefício. Mitigações: o app não abre portas, não faz rede, só executa binários de System32 com
+  argumentos validados, restaura apenas a allowlist em código e o modo jogo automático é opt-in.
+- **Revisar:** antes de distribuir para terceiros.
+
+## D-021 — Textos da UI em `Resources/Strings.xaml`
+
+- **Fase:** 6
+- **Contexto:** lacuna 1 sugere `Resources.resx`. A geração de classe tipada de `.resx` não roda no `dotnet build` puro
+  (depende do Visual Studio).
+- **Decisão:** dicionário XAML com `sys:String` (pt-BR), referenciado por `DynamicResource`. Para outro idioma, basta um
+  dicionário com as mesmas chaves. Mensagens geradas em código (Core/ViewModels) já estão em pt-BR.
+
+## D-022 — `game-gpu-pref-high` e `game-fso-compat` viram guias (advisory)
+
+- **Fase:** 6
+- **Contexto:** regra 5 da seção 0. O significado de `GpuPreference=N` não tem tabela oficial (V9) e o valor de
+  `AppCompatFlags\Layers` só tem fonte de comunidade (V18).
+- **Decisão:** os dois aparecem na aba Jogos como orientação textual; o WinTune não grava esses valores.
+
+## D-023 — Detecção de jogo e anti-cheat
+
+- **Fase:** 6
+- **Decisão:** a lista de processos vem do snapshot do sistema (`Process.GetProcesses`, só o nome); nenhum handle é aberto para o
+  processo do jogo. As verificações da aba Jogos leem só arquivos da Steam (`libraryfolders.vdf`, `appmanifest_*.acf`) e o registro
+  do Ubisoft Connect; nunca leem nem alteram arquivos de instalação além de confirmar que o executável existe.

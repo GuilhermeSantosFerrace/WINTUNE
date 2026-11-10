@@ -1,0 +1,14 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Alto contraste: usa as cores do sistema escolhidas pelo usuário (lidas ao abrir o app). -->
+  <SolidColorBrush x:Key="Brush.Window" Color="{x:Static SystemColors.WindowColor}" />
+  <SolidColorBrush x:Key="Brush.Panel" Color="{x:Static SystemColors.WindowColor}" />
+  <SolidColorBrush x:Key="Brush.Text" Color="{x:Static SystemColors.WindowTextColor}" />
+  <SolidColorBrush x:Key="Brush.TextSecondary" Color="{x:Static SystemColors.WindowTextColor}" />
+  <SolidColorBrush x:Key="Brush.Border" Color="{x:Static SystemColors.WindowTextColor}" />
+  <SolidColorBrush x:Key="Brush.Accent" Color="{x:Static SystemColors.HighlightColor}" />
+  <SolidColorBrush x:Key="Brush.AccentText" Color="{x:Static SystemColors.HighlightTextColor}" />
+  <SolidColorBrush x:Key="Brush.Warning" Color="{x:Static SystemColors.WindowTextColor}" />
+  <SolidColorBrush x:Key="Brush.Critical" Color="{x:Static SystemColors.WindowTextColor}" />
+  <SolidColorBrush x:Key="Brush.Info" Color="{x:Static SystemColors.WindowTextColor}" />
+</ResourceDictionary>

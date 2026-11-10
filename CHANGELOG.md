@@ -30,3 +30,7 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 5: `Analyzer` com regras isoladas (`IDiagnosticRule`): `ram-below-rated`, `ram-single-channel`, `ram-capacity-low`,
   `rebar-unknown`, `vbs-active`, `chipset-driver-missing`, `fast-startup`, `disk-low-space`, `vcache-note`, `gpu-driver-old`;
   `SystemProfileDetector`; testes de integração somente leitura com guardas que proíbem escrita.
+- Fase 6: GUI MVP em WPF/MVVM (foco, jogos, cenários, recomendações, diagnóstico, aba Jogos com verificações e guias da
+  seção 4.4, registro de operações), confirmação com prévia exata, ponto de restauração, Desfazer tudo com tratamento de
+  conflito, cancelamento, tema claro/escuro/alto contraste, instância única, log rotativo em `%LOCALAPPDATA%\WinTune\logs`,
+  manifest `requireAdministrator`; `docs/UX.md`.

@@ -1,23 +1,159 @@
 <Window x:Class="WinTune.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WinTune"
-        Width="800"
-        Height="500"
+        xmlns:vm="clr-namespace:WinTune.Presentation.ViewModels;assembly=WinTune.Presentation"
+        Title="{DynamicResource Str.AppTitle}"
+        Width="1100" Height="760" MinWidth="820" MinHeight="560"
         WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource Brush.Window}"
+        Foreground="{DynamicResource Brush.Text}"
         AutomationProperties.Name="WinTune - janela principal">
-  <Grid Margin="24">
-    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-      <TextBlock Text="WinTune"
-                 FontSize="28"
-                 FontWeight="SemiBold"
-                 HorizontalAlignment="Center"
-                 AutomationProperties.Name="Título WinTune" />
-      <TextBlock Text="Fundação do projeto (Fase 0). A interface completa chega na Fase 6."
-                 Margin="0,12,0,0"
-                 TextWrapping="Wrap"
-                 HorizontalAlignment="Center"
-                 AutomationProperties.Name="Status do projeto" />
-    </StackPanel>
-  </Grid>
+  <Window.InputBindings>
+    <KeyBinding Key="F5" Command="{Binding AnalyzeCommand}" />
+    <KeyBinding Key="Escape" Command="{Binding CancelCommand}" />
+  </Window.InputBindings>
+
+  <DockPanel>
+    <!-- Cabeçalho -->
+    <Border DockPanel.Dock="Top" Padding="16,12" Background="{DynamicResource Brush.Panel}"
+            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1">
+      <StackPanel>
+        <TextBlock Text="{DynamicResource Str.AppTitle}" FontSize="22" FontWeight="SemiBold" />
+        <TextBlock Text="{DynamicResource Str.Tagline}" Style="{StaticResource Secondary}" />
+      </StackPanel>
+    </Border>
+
+    <!-- Barra de status -->
+    <Border DockPanel.Dock="Bottom" Padding="16,8" Background="{DynamicResource Brush.Panel}"
+            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0">
+      <DockPanel LastChildFill="True">
+        <Button DockPanel.Dock="Right" Content="{DynamicResource Str.Cancel}" Margin="8,0,0,0"
+                Command="{Binding CancelCommand}"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
+                AutomationProperties.Name="Cancelar operação em andamento" />
+        <ProgressBar DockPanel.Dock="Right" Width="220" Height="14" Minimum="0" Maximum="100"
+                     Value="{Binding Progress}" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
+                     AutomationProperties.Name="Progresso" />
+        <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                   AutomationProperties.LiveSetting="Polite" AutomationProperties.Name="Status" />
+      </DockPanel>
+    </Border>
+
+    <TabControl x:Name="Tabs" Margin="8" AutomationProperties.Name="Seções do WinTune">
+      <!-- ====================== Otimizar ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Optimize}" AutomationProperties.Name="Otimizar">
+        <Grid Margin="12">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+
+          <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,12,0">
+            <StackPanel IsEnabled="{Binding IsIdle}">
+              <GroupBox Header="{DynamicResource Str.Focus}">
+                <StackPanel>
+                  <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Work}" IsChecked="{Binding IsWorkFocus}" AutomationProperties.Name="Foco: Trabalho" />
+                  <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Gaming}" IsChecked="{Binding IsGamingFocus}" AutomationProperties.Name="Foco: Jogos" />
+                  <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Both}" IsChecked="{Binding IsBothFocus}" AutomationProperties.Name="Foco: Os dois" />
+                </StackPanel>
+              </GroupBox>
+
+              <GroupBox Header="{DynamicResource Str.Games}"
+                        Visibility="{Binding IsGamesSectionVisible, Converter={StaticResource BoolToVisibility}}"
+                        IsEnabled="{Binding IsGamesSectionVisible}">
+                <StackPanel>
+                  <CheckBox Content="{DynamicResource Str.Games.Siege}" IsChecked="{Binding SiegeSelected}" AutomationProperties.Name="Otimizar para Rainbow Six Siege" />
+                  <CheckBox Content="{DynamicResource Str.Games.Cs2}" IsChecked="{Binding Cs2Selected}" AutomationProperties.Name="Otimizar para Counter-Strike 2" />
+                </StackPanel>
+              </GroupBox>
+
+              <GroupBox Header="{DynamicResource Str.Scenarios}">
+                <ItemsControl ItemsSource="{Binding Scenarios}" IsTabStop="False">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:ScenarioOption}">
+                      <CheckBox Content="{Binding Label}" IsChecked="{Binding IsChecked}" AutomationProperties.Name="{Binding Label}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </GroupBox>
+
+              <TextBlock Text="{DynamicResource Str.Privacy}" Style="{StaticResource Secondary}" Margin="0,8,0,0" />
+            </StackPanel>
+          </ScrollViewer>
+
+          <DockPanel Grid.Column="1">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="{DynamicResource Str.Analyze}" Style="{StaticResource PrimaryButton}" Command="{Binding AnalyzeCommand}"
+                      AutomationProperties.Name="Analisar o sistema" ToolTip="Lê o estado do sistema sem alterar nada (F5)" />
+              <Button Content="{DynamicResource Str.Apply}" Command="{Binding ApplySelectedCommand}"
+                      AutomationProperties.Name="Aplicar ajustes selecionados" ToolTip="Mostra o que será alterado e pede confirmação" />
+              <Button Content="{DynamicResource Str.UndoAll}" Command="{Binding UndoAllCommand}"
+                      AutomationProperties.Name="Desfazer todos os ajustes" ToolTip="Restaura o estado original de tudo que o WinTune alterou" />
+            </StackPanel>
+
+            <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Recommended}" Style="{StaticResource SectionHeader}" />
+            <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Recommended.Empty}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+
+            <ListBox ItemsSource="{Binding Recommendations}" HorizontalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" KeyboardNavigation.TabNavigation="Continue"
+                     AutomationProperties.Name="Ajustes recomendados">
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:TweakItemViewModel}">
+                  <Grid Margin="4,6" AutomationProperties.Name="{Binding AccessibleName}">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" VerticalAlignment="Top" Margin="0,2,8,0" IsChecked="{Binding IsSelected}"
+                              AutomationProperties.Name="{Binding Name, StringFormat=Selecionar {0}}" />
+                    <StackPanel Grid.Column="1">
+                      <TextBlock FontWeight="SemiBold" TextWrapping="Wrap">
+                        <Run Text="{Binding Name, Mode=OneWay}" />
+                        <Run Text="  ·  " Foreground="{DynamicResource Brush.TextSecondary}" />
+                        <Run Text="{Binding RiskText, Mode=OneWay}" Foreground="{DynamicResource Brush.TextSecondary}" />
+                        <Run Text="  ·  " Foreground="{DynamicResource Brush.TextSecondary}" />
+                        <Run Text="{Binding Status, Mode=OneWay}" Foreground="{DynamicResource Brush.Accent}" />
+                      </TextBlock>
+                      <TextBlock Text="{Binding Description}" Style="{StaticResource Secondary}" Margin="0,2,0,0" />
+                      <TextBlock Text="{Binding Note}" Foreground="{DynamicResource Brush.Warning}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                 Visibility="{Binding HasNote, Converter={StaticResource BoolToVisibility}}" />
+                      <TextBlock Style="{StaticResource Secondary}" Margin="0,2,0,0" FontFamily="Consolas" FontSize="11">
+                        <Run Text="{DynamicResource Str.Where}" />
+                        <Run Text="{Binding Mechanism, Mode=OneWay}" />
+                      </TextBlock>
+                    </StackPanel>
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </Grid>
+      </TabItem>
+
+      <!-- ====================== Diagnóstico ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Diagnostics}" AutomationProperties.Name="Diagnóstico">
+        <DockPanel Margin="12">
+          <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Diagnostics.Intro}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SystemFindings}" ItemTemplate="{StaticResource FindingTemplate}" />
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+      <!-- ====================== Jogos ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Games}" AutomationProperties.Name="Jogos">
+        <DockPanel Margin="12">
+          <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Games.Intro}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding GameFindings}" ItemTemplate="{StaticResource FindingTemplate}" />
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+      <!-- ====================== Registro ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
+        <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />
+      </TabItem>
+    </TabControl>
+  </DockPanel>
 </Window>

@@ -1,0 +1,43 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- Textos da interface (pt-BR). Para outro idioma, crie Strings.<cultura>.xaml com as mesmas chaves. -->
+  <sys:String x:Key="Str.AppTitle">WinTune</sys:String>
+  <sys:String x:Key="Str.Tagline">Diagnóstico e ajustes seguros e reversíveis para o Windows 11</sys:String>
+
+  <sys:String x:Key="Str.Tab.Optimize">_Otimizar</sys:String>
+  <sys:String x:Key="Str.Tab.Diagnostics">_Diagnóstico</sys:String>
+  <sys:String x:Key="Str.Tab.Games">_Jogos</sys:String>
+  <sys:String x:Key="Str.Tab.Telemetry">_Telemetria</sys:String>
+  <sys:String x:Key="Str.Tab.Startup">_Inicialização</sys:String>
+  <sys:String x:Key="Str.Tab.Cleanup">_Limpeza</sys:String>
+  <sys:String x:Key="Str.Tab.Benchmark">_Benchmark</sys:String>
+  <sys:String x:Key="Str.Tab.Services">_Serviços</sys:String>
+  <sys:String x:Key="Str.Tab.Profiles">_Perfis e modo jogo</sys:String>
+  <sys:String x:Key="Str.Tab.History">_Histórico</sys:String>
+  <sys:String x:Key="Str.Tab.Log">Re_gistro</sys:String>
+
+  <sys:String x:Key="Str.Focus">Foco</sys:String>
+  <sys:String x:Key="Str.Focus.Work">_Trabalho</sys:String>
+  <sys:String x:Key="Str.Focus.Gaming">_Jogos</sys:String>
+  <sys:String x:Key="Str.Focus.Both">_Os dois</sys:String>
+  <sys:String x:Key="Str.Games">Jogos a otimizar</sys:String>
+  <sys:String x:Key="Str.Games.Siege">Rainbow Six _Siege</sys:String>
+  <sys:String x:Key="Str.Games.Cs2">Counter-Strike _2</sys:String>
+  <sys:String x:Key="Str.Scenarios">Cenários com problema</sys:String>
+
+  <sys:String x:Key="Str.Analyze">_Analisar</sys:String>
+  <sys:String x:Key="Str.Apply">Aplicar _selecionados</sys:String>
+  <sys:String x:Key="Str.UndoAll">_Desfazer tudo</sys:String>
+  <sys:String x:Key="Str.Cancel">_Cancelar</sys:String>
+
+  <sys:String x:Key="Str.Recommended">Ajustes recomendados</sys:String>
+  <sys:String x:Key="Str.Recommended.Empty">Clique em Analisar para ver as recomendações para este PC.</sys:String>
+  <sys:String x:Key="Str.Where">Onde muda:</sys:String>
+  <sys:String x:Key="Str.Risk">Risco:</sys:String>
+  <sys:String x:Key="Str.Status">Estado:</sys:String>
+  <sys:String x:Key="Str.Evidence">Evidência:</sys:String>
+  <sys:String x:Key="Str.Diagnostics.Intro">Avisos sobre hardware e configuração. O WinTune só informa: nada aqui é alterado automaticamente.</sys:String>
+  <sys:String x:Key="Str.Games.Intro">Verificações e guias para os jogos escolhidos. O WinTune nunca toca no processo nem nos arquivos dos jogos (anti-cheat).</sys:String>
+  <sys:String x:Key="Str.Privacy">Tudo fica neste PC: o WinTune não envia dados pela rede.</sys:String>
+</ResourceDictionary>
