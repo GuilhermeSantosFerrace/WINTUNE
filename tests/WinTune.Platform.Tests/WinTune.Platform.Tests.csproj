@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WinTune.Platform\WinTune.Platform.csproj" />
+    <ProjectReference Include="..\WinTune.TestDoubles\WinTune.TestDoubles.csproj" />
   </ItemGroup>
 
 </Project>

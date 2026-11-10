@@ -8,6 +8,10 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Plataforma -->
+    <PackageVersion Include="System.Management" Version="[8.0.0]" />
+  </ItemGroup>
+  <ItemGroup>
     <!-- Testes -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="[17.14.1]" />
     <PackageVersion Include="xunit" Version="[2.9.3]" />

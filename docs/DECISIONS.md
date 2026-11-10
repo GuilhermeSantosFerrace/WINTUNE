@@ -57,3 +57,34 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Fase:** 0
 - **Contexto:** o manifest `requireAdministrator` é entregável da Fase 6, e a seção 2 sugere UI sem elevação + helper elevado.
 - **Decisão:** na Fase 0 o app roda sem manifest de elevação (janela placeholder, não altera nada).
+
+## D-008 — Interfaces de plataforma em `WinTune.Platform.Abstractions` (net8.0)
+
+- **Fase:** 1
+- **Contexto:** a seção 3.1 diz que o Core só fala com o Windows pelas interfaces de Platform, mas o Core é `net8.0`
+  (testável em qualquer lugar) e as implementações reais precisam de `net8.0-windows`.
+- **Decisão:** as interfaces (`IRegistry`, `IProcessRunner`, `IWmiReader`, `IServiceControl`, `IFileSystem`, `IClock`,
+  `IEnvironmentInfo`, `IProcessList`, `IShellLauncher`) ficam em `WinTune.Platform.Abstractions` (`net8.0`);
+  `WinTune.Platform` contém só as implementações reais.
+- **Consequências:** o Core referencia apenas as abstrações. Um teste de arquitetura impede `Registry.*`/`Process.Start`
+  fora de `WinTune.Platform`.
+
+## D-009 — Fakes compartilhados em `tests/WinTune.TestDoubles`
+
+- **Fase:** 1
+- **Decisão:** os fakes (`FakeRegistry`, `FakeProcessRunner`, `FakeWmiReader`, `FakeFileSystem`, ...) ficam em uma
+  biblioteca de testes usada por todos os projetos de teste, evitando duplicação.
+
+## D-010 — Executáveis externos somente de System32
+
+- **Fase:** 1
+- **Decisão:** `ProcessRunner` resolve nomes relativos apenas dentro de `%SystemRoot%\System32` (nunca pelo PATH), aceita
+  só `.exe`, rejeita `..`, exige tempo limite entre 0 e 10 min e nunca usa shell. Evita sequestro de PATH e injeção.
+
+## D-011 — Tipo de inicialização de serviço via `ChangeServiceConfig`
+
+- **Fase:** 1
+- **Contexto:** `ServiceController` não altera o tipo de inicialização, e gravar `Start` direto no registro não atualiza
+  o banco do SCM até reiniciar.
+- **Decisão:** leitura via WMI (`Win32_Service`) e registro; escrita via `ChangeServiceConfigW`/`ChangeServiceConfig2W`.
+  A interface não expõe iniciar/parar serviço.

@@ -15,3 +15,7 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Script `build.ps1` com alvos `build`, `test`, `run`, `publish` e `clean`.
 - Workflow de CI no GitHub Actions (`windows-latest`): restore, build e testes.
 - `docs/DECISIONS.md` com as decisões tomadas na Fase 0.
+- Fase 1: abstrações de plataforma (`IRegistry`, `IProcessRunner`, `IWmiReader`, `IServiceControl`, `IFileSystem`,
+  `IClock`, `IEnvironmentInfo`, `IProcessList`, `IShellLauncher`) e implementações reais para Windows.
+- Fase 1: fakes em memória (`tests/WinTune.TestDoubles`) e testes de arquitetura (sem acesso direto ao Windows fora
+  de Platform, sem APIs de rede).

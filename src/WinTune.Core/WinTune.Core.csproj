@@ -10,4 +10,8 @@
     <InternalsVisibleTo Include="WinTune.Core.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WinTune.Platform.Abstractions\WinTune.Platform.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
