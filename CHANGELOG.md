@@ -49,3 +49,5 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   allowlist de atualizadores de terceiros para Automático → Manual e desabilitar tarefas, reversível, sem parar serviços.
 - Fase 12: perfis salvos em `%APPDATA%\WinTune\profiles`, `games.json` editável e validado, modo jogo automático opt-in por
   jogo (detecção só pelo nome do processo, aplica ao abrir e restaura ao fechar, estado pendente após queda), ícone na bandeja.
+- Fase 13: relatório exportável em Markdown e JSON (hardware, diagnóstico, ajustes ativos, benchmark, histórico, versão),
+  anonimizado (sem usuário, computador, números de série ou chaves); aba Histórico (journal) e botão "Abrir pasta de logs".

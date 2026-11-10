@@ -439,6 +439,29 @@
         </ScrollViewer>
       </TabItem>
 
+      <!-- ====================== Histórico ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.History}" AutomationProperties.Name="Histórico" DataContext="{Binding History}">
+        <DockPanel Margin="12">
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+            <Button Content="_Atualizar" Command="{Binding RefreshCommand}" AutomationProperties.Name="Atualizar histórico" />
+            <Button Content="Exportar _Markdown…" Command="{Binding ExportMarkdownCommand}" AutomationProperties.Name="Exportar relatório em Markdown" />
+            <Button Content="Exportar _JSON…" Command="{Binding ExportJsonCommand}" AutomationProperties.Name="Exportar relatório em JSON" />
+            <Button Content="Abrir pasta de _logs" Command="{Binding OpenLogsCommand}" AutomationProperties.Name="Abrir pasta de logs" />
+          </StackPanel>
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                     Text="Histórico de tudo que o WinTune fez (aplicar, reverter, ponto de restauração, limpeza, modo jogo). O relatório exportado é um arquivo local, sem nome de usuário, nome do computador, números de série ou chaves." />
+          <DataGrid ItemsSource="{Binding Entries}" IsReadOnly="True" AutomationProperties.Name="Histórico de operações">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Quando" Binding="{Binding When}" Width="Auto" />
+              <DataGridTextColumn Header="Ação" Binding="{Binding Action}" Width="Auto" />
+              <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="*" />
+              <DataGridTextColumn Header="Resultado" Binding="{Binding Result}" Width="Auto" />
+              <DataGridTextColumn Header="Mensagem" Binding="{Binding Message}" Width="3*" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />

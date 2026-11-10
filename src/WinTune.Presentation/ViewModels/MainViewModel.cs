@@ -56,7 +56,11 @@ public sealed partial class MainViewModel : ObservableObject
         Benchmark = new BenchmarkViewModel(services, dialogs, AddLog, Telemetry);
         ServicesTab = new ServicesViewModel(services, dialogs, AddLog);
         Profiles = new ProfilesViewModel(services, dialogs, AddLog, this);
+        History = new HistoryViewModel(services, dialogs, AddLog, this);
     }
+
+    /// <summary>Aba Histórico.</summary>
+    public HistoryViewModel History { get; }
 
     /// <summary>Aba Perfis e modo jogo.</summary>
     public ProfilesViewModel Profiles { get; }
