@@ -19,3 +19,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   `IClock`, `IEnvironmentInfo`, `IProcessList`, `IShellLauncher`) e implementações reais para Windows.
 - Fase 1: fakes em memória (`tests/WinTune.TestDoubles`) e testes de arquitetura (sem acesso direto ao Windows fora
   de Platform, sem APIs de rede).
+- Fase 2: domínio (`Focus`, `Scenario`, `GameTarget`, `Risk`, `Severity`, `Finding`, `TweakResult`), contrato `Tweak`,
+  `BackupStore` (escrita atômica, schema 1, journal, intenções de operação, arquivo corrompido movido para `.corrupt`),
+  `RestorePointService` e `RegistryTweak` (rollback parcial, reversão segura contra drift, allowlist, modo simulação).

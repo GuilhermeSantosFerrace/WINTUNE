@@ -88,3 +88,35 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
   o banco do SCM até reiniciar.
 - **Decisão:** leitura via WMI (`Win32_Service`) e registro; escrita via `ChangeServiceConfigW`/`ChangeServiceConfig2W`.
   A interface não expõe iniciar/parar serviço.
+
+## D-012 — Local e proteção do backup
+
+- **Fase:** 2
+- **Contexto:** seção 3.4 e risco R2 (o app elevado restaura valores a partir de um JSON).
+- **Decisão:** backup em `%ProgramData%\WinTune\backup.json`, diretório criado com ACL protegida (Administradores e SYSTEM:
+  controle total; Usuários: leitura). Além disso, **allowlist em código**: cada ajuste só restaura (hive, chave, nome) que ele
+  mesmo declara; entradas estranhas são ignoradas e registradas no journal. HMAC com DPAPI **não** foi adotado: DPAPI
+  de escopo máquina pode ser decifrada por qualquer processo local, então não acrescenta proteção real além da ACL.
+- **Consequências:** se a ACL não puder ser aplicada (sem elevação), o app avisa e continua; a allowlist segue valendo.
+
+## D-013 — `Revert(store, RevertMode)` e status `Conflict`
+
+- **Fase:** 2
+- **Contexto:** a seção 3.4 pede reverter sem sobrescrever drift e perguntar ao usuário.
+- **Decisão:** o contrato mantém `Revert(BackupStore)` (modo seguro) e ganha a sobrecarga `Revert(BackupStore, RevertMode)`.
+  No modo seguro, se o valor atual não for nem o original nem o aplicado, nada é escrito e o resultado é `Conflict`;
+  a UI pergunta e, se o usuário confirmar, chama com `RevertMode.Force`. Valor atual igual ao original conta como já revertido.
+- **Extras:** `DescribeChanges()` (modo simulação/dry-run, lacuna 3 da seção 10.2) e `GetAdvice(SystemProfile)`.
+
+## D-014 — Journal de intenção (R13) desde a Fase 2
+
+- **Fase:** 2
+- **Decisão:** `BeginOperation` é persistido antes de qualquer escrita, e o original é persistido antes do primeiro valor.
+  Operações sem `CompleteOperation` aparecem em `IncompleteOperations` para reconciliação no próximo início.
+
+## D-015 — Ponto de restauração
+
+- **Fase:** 2
+- **Decisão:** `Checkpoint-Computer` via `System32\WindowsPowerShell\v1.0\powershell.exe` com comando fixo (sem entrada do usuário).
+  Saída contendo "1440" com código 0 = limite de 24 h (V14); código ≠ 0 = falha (provável Proteção do Sistema desligada, V15).
+  Nenhum dos dois bloqueia a aplicação: o backup JSON continua valendo (R5).
