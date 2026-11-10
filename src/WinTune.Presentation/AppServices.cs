@@ -42,7 +42,13 @@ public sealed class AppServices
     public required TweakCatalog Catalog { get; init; }
 
     /// <summary>Jogos-alvo.</summary>
-    public IReadOnlyList<GameDefinition> Games { get; init; } = GameDefinition.Defaults;
+    public IReadOnlyList<GameDefinition> Games { get; set; } = GameDefinition.Defaults;
+
+    /// <summary>Cria os sensores (somente modo usuário). Null = telemetria indisponível.</summary>
+    public Func<IHardwareSensors>? SensorsFactory { get; init; }
+
+    /// <summary>Uso por processo (consumidores em segundo plano).</summary>
+    public IProcessUsageReader? ProcessUsage { get; init; }
 
     /// <summary>
     /// Resolve um ID de backup para o ajuste capaz de revertê-lo (catálogo + ajustes dinâmicos de fases posteriores).

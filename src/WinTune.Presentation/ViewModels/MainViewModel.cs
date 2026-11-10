@@ -49,7 +49,12 @@ public sealed partial class MainViewModel : ObservableObject
         {
             AddLog(warning);
         }
+
+        Telemetry = new TelemetryViewModel(services);
     }
+
+    /// <summary>Aba Telemetria.</summary>
+    public TelemetryViewModel Telemetry { get; }
 
     public ObservableCollection<ScenarioOption> Scenarios { get; }
 

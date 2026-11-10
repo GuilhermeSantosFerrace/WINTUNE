@@ -116,6 +116,8 @@ public partial class App : Application
         var catalog = new TweakCatalog(registry, runner);
         return new AppServices
         {
+            SensorsFactory = () => new Platform.Sensors.UserModeSensors(wmi),
+            ProcessUsage = new Platform.Sensors.ProcessUsageReader(wmi),
             Registry = registry,
             Runner = runner,
             Wmi = wmi,

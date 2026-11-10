@@ -150,6 +150,88 @@
         </DockPanel>
       </TabItem>
 
+      <!-- ====================== Telemetria ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Telemetry}" AutomationProperties.Name="Telemetria" DataContext="{Binding Telemetry}">
+        <ScrollViewer Margin="12" VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="Monitor ao vivo com fontes em modo usuário (contadores do Windows, NVML e WMI): seguro com jogos com anti-cheat abertos. Nada é gravado fora deste PC." />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="Iniciar _monitor" Command="{Binding StartMonitoringCommand}" AutomationProperties.Name="Iniciar monitor ao vivo" />
+              <Button Content="_Parar monitor" Command="{Binding StopMonitoringCommand}" AutomationProperties.Name="Parar monitor ao vivo" />
+            </StackPanel>
+            <TextBlock Text="{Binding UnavailableText}" Foreground="{DynamicResource Brush.Warning}" TextWrapping="Wrap" Margin="0,0,0,8"
+                       Visibility="{Binding HasUnavailable, Converter={StaticResource BoolToVisibility}}" />
+
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="{Binding CpuText}" AutomationProperties.LiveSetting="Off" />
+                <TextBlock Text="{Binding GpuText}" />
+                <TextBlock Text="{Binding RamText}" />
+                <TextBlock Text="{Binding DiskText}" />
+                <WrapPanel Margin="0,8,0,0">
+                  <StackPanel Margin="0,0,16,8">
+                    <TextBlock Text="CPU (%)" Style="{StaticResource Secondary}" />
+                    <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" Width="362" Height="82">
+                      <Canvas Width="360" Height="80" AutomationProperties.Name="Gráfico de uso de CPU">
+                        <Polyline Points="{Binding CpuSeries, Converter={StaticResource SeriesToPoints}}" Stroke="{DynamicResource Brush.Accent}" StrokeThickness="1.5" />
+                      </Canvas>
+                    </Border>
+                  </StackPanel>
+                  <StackPanel Margin="0,0,16,8">
+                    <TextBlock Text="GPU (%)" Style="{StaticResource Secondary}" />
+                    <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" Width="362" Height="82">
+                      <Canvas Width="360" Height="80" AutomationProperties.Name="Gráfico de uso de GPU">
+                        <Polyline Points="{Binding GpuSeries, Converter={StaticResource SeriesToPoints}}" Stroke="{DynamicResource Brush.Warning}" StrokeThickness="1.5" />
+                      </Canvas>
+                    </Border>
+                  </StackPanel>
+                  <StackPanel Margin="0,0,16,8">
+                    <TextBlock Text="RAM (%)" Style="{StaticResource Secondary}" />
+                    <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" Width="362" Height="82">
+                      <Canvas Width="360" Height="80" AutomationProperties.Name="Gráfico de uso de RAM">
+                        <Polyline Points="{Binding RamSeries, Converter={StaticResource SeriesToPoints}}" Stroke="{DynamicResource Brush.Critical}" StrokeThickness="1.5" />
+                      </Canvas>
+                    </Border>
+                  </StackPanel>
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+
+            <TextBlock Text="Sessão de diagnóstico" Style="{StaticResource SectionHeader}" Margin="0,8,0,8" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <TextBlock Text="Duração (min):" VerticalAlignment="Center" Margin="0,0,8,0" />
+              <TextBox Width="60" Text="{Binding SessionMinutes, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Duração da sessão em minutos" Margin="0,0,8,0" />
+              <Button Content="Iniciar _sessão de diagnóstico" Style="{StaticResource PrimaryButton}" Command="{Binding StartSessionCommand}" AutomationProperties.Name="Iniciar sessão de diagnóstico" />
+              <Button Content="_Encerrar sessão" Command="{Binding StopSessionCommand}" AutomationProperties.Name="Encerrar sessão de diagnóstico" />
+            </StackPanel>
+            <TextBlock Text="{Binding SessionStatus}" Style="{StaticResource Secondary}" />
+            <TextBlock Text="{Binding SessionSummary}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,4" AutomationProperties.LiveSetting="Polite" />
+            <ItemsControl ItemsSource="{Binding Evidence}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding StringFormat=• {0}}" Style="{StaticResource Secondary}" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding SessionFindings}" ItemTemplate="{StaticResource FindingTemplate}" Margin="0,8,0,0" />
+
+            <TextBlock Text="Consumidores em segundo plano" Style="{StaticResource SectionHeader}" Margin="0,8,0,8" />
+            <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                       Text="O WinTune nunca finaliza processos: só mostra quem consome e sugere fechar o que não usa durante o jogo. Os processos dos jogos são excluídos da análise." />
+            <Button Content="_Atualizar lista" HorizontalAlignment="Left" Command="{Binding RefreshConsumersCommand}" Margin="0,0,0,8" AutomationProperties.Name="Atualizar consumidores em segundo plano" />
+            <DataGrid ItemsSource="{Binding Consumers}" IsReadOnly="True" MaxHeight="300" AutomationProperties.Name="Consumidores em segundo plano">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Processo" Binding="{Binding Name}" Width="2*" />
+                <DataGridTextColumn Header="CPU" Binding="{Binding Cpu}" Width="*" />
+                <DataGridTextColumn Header="Memória privada" Binding="{Binding Memory}" Width="*" />
+                <DataGridTextColumn Header="Tipo conhecido" Binding="{Binding Category}" Width="2*" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
       <!-- ====================== Registro ====================== -->
       <TabItem Header="{DynamicResource Str.Tab.Log}" AutomationProperties.Name="Registro de operações">
         <ListBox Margin="12" ItemsSource="{Binding Log}" AutomationProperties.Name="Registro de operações" />

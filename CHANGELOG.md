@@ -34,3 +34,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   seção 4.4, registro de operações), confirmação com prévia exata, ponto de restauração, Desfazer tudo com tratamento de
   conflito, cancelamento, tema claro/escuro/alto contraste, instância única, log rotativo em `%LOCALAPPDATA%\WinTune\logs`,
   manifest `requireAdministrator`; `docs/UX.md`.
+- Fase 7: telemetria ao vivo somente em modo usuário (PDH em inglês, NVML, WMI), `Sampler` 1 Hz com buffer circular e
+  sessões rotuladas por jogo, `BottleneckClassifier` (GPU, CPU 1 thread, CPU total, RAM/paginação, disco, `thermal-throttle`),
+  consumidores em segundo plano (`game-background-load`), aba Telemetria com gráficos leves (Polyline). Overhead medido: 0,076%.

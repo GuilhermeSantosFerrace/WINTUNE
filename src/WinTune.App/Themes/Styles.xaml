@@ -1,6 +1,9 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:svc="clr-namespace:WinTune.App.Services">
   <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+  <svc:SeriesToPointsConverter x:Key="SeriesToPoints" Width="360" Height="80" Capacity="120" />
+  <svc:InverseBoolConverter x:Key="InverseBool" />
 
   <Style x:Key="SectionHeader" TargetType="TextBlock">
     <Setter Property="FontSize" Value="16" />

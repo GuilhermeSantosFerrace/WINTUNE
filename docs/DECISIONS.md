@@ -180,3 +180,31 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
 - **Decisão:** a lista de processos vem do snapshot do sistema (`Process.GetProcesses`, só o nome); nenhum handle é aberto para o
   processo do jogo. As verificações da aba Jogos leem só arquivos da Steam (`libraryfolders.vdf`, `appmanifest_*.acf`) e o registro
   do Ubisoft Connect; nunca leem nem alteram arquivos de instalação além de confirmar que o executável existe.
+
+## D-024 — Telemetria só em modo usuário; LibreHardwareMonitorLib não incluída
+
+- **Fase:** 7
+- **Contexto:** R1, V19-V22. A LibreHardwareMonitorLib usa o driver de kernel PawnIO (substituto do WinRing0) para vários
+  sensores; a compatibilidade com BattlEye/VAC não foi confirmada. O item (3) da Fase 7 manda não incluir o provedor se não
+  for possível garantir as regras (1)-(2).
+- **Decisão:** não incluir a biblioteca. `UserModeSensors` usa:
+  - **PDH** com `PdhAddEnglishCounter` (nomes em inglês, funciona em Windows pt-BR): `% Processor Utility` total e por thread,
+    `% Processor Performance` × clock base (clock efetivo), `Memory\Available MBytes`, `Memory\Pages/sec`,
+    `PhysicalDisk(_Total)\% Idle Time`, `GPU Engine(*engtype_3D)\Utilization Percentage` (fallback de GPU);
+  - **NVML** (`System32\nvml.dll`, instalada pelo driver NVIDIA): uso, temperatura, clock e VRAM da GPU;
+  - **WMI** `MSAcpi_ThermalZoneTemperature`: temperatura **aproximada** (zona térmica ACPI, não é o sensor do núcleo).
+- **Consequências:** o "modo seguro para anti-cheat" vale sempre (não há modo com driver). Temperatura real do núcleo da CPU
+  fica indisponível; a detecção de throttling da CPU usa a queda do clock efetivo sob carga.
+
+## D-025 — Overhead da amostragem
+
+- **Fase:** 7
+- **Medição:** `SensorIntegrationTests.Sampling_At1Hz_UsesLessThanOnePercentCpu`, 20 amostras a 1 Hz em um Ryzen 5 PRO 230
+  (12 threads): **0,076% da CPU da máquina** (0,92% de um núcleo). Critério da Fase 7 (< 1%) atendido.
+- **Nota:** a leitura WMI da zona térmica ocorre a cada 5 amostras para reduzir custo.
+
+## D-026 — Consumidores em segundo plano via WMI de desempenho
+
+- **Fase:** 7
+- **Decisão:** `Win32_PerfFormattedData_PerfProc_Process` (dados de desempenho do sistema; o WinTune não abre handles para os
+  processos). Processos dos jogos são removidos pela comparação de nome antes de qualquer análise. Nunca finaliza processos.
