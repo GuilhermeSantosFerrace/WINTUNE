@@ -29,7 +29,8 @@ Convenções:
 
 - **O que faz:** liga o Modo de Jogo do Windows.
 - **Chaves:** HKCU `Software\Microsoft\GameBar` → `AutoGameModeEnabled` (DWORD) = `1`; `AllowAutoGameMode` (DWORD) = `1`.
-- **Padrão do Windows:** ligado (valores geralmente ausentes ou `1`). É comum o ajuste aparecer como "já aplicado" (R8).
+- **Padrão do Windows:** ligado (valores geralmente ausentes ou `1`). Valor **ausente conta como já aplicado** (é o padrão
+  ligado); o app só escreve se encontrar `0`. É comum o ajuste aparecer como "já aplicado" (R8).
 - **Foco / cenários:** Jogos / Travadas, FPS baixo.
 - **Risco:** seguro. **Reinício:** não.
 - **Fonte:** Microsoft Q&A, [Game Mode & Game Bar won't turn off](https://learn.microsoft.com/en-us/answers/questions/4108270/game-mode-game-bar-wont-turn-off)

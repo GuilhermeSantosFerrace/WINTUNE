@@ -1,0 +1,44 @@
+using FluentAssertions;
+using WinTune.Core.Diagnostics;
+using WinTune.Core.Domain;
+using WinTune.Core.Tweaks;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace WinTune.Platform.Tests;
+
+/// <summary>Executa as partes somente leitura do Core contra o Windows real. Fora do CI.</summary>
+[Trait("Category", "Integration")]
+public class CoreOnRealMachineTests(ITestOutputHelper output)
+{
+    [Fact]
+    public void StaticDiagnostics_RunWithoutExceptions_AndWithoutWrites()
+    {
+        var wmi = new WmiReader();
+        var registry = new ReadOnlyRegistryGuard(new WindowsRegistry());
+        var runner = new ReadOnlyProcessGuard(new ProcessRunner());
+        var env = new WindowsEnvironment();
+        var profile = SystemProfileDetector.Detect(wmi, runner, env);
+        var ctx = new DiagnosticContext(wmi, registry, new WindowsFileSystem(), env, new SystemClock(), profile);
+
+        var findings = new Analyzer(Analyzer.StaticRules()).Run(ctx);
+
+        output.WriteLine($"CPU: {profile.CpuName} | GPUs: {string.Join(", ", profile.GpuNames)} | RAM: {profile.TotalRamBytes / 1024 / 1024 / 1024} GB | Ryzen plan: {profile.HasAmdRyzenBalancedPlan}");
+        foreach (var f in findings)
+        {
+            output.WriteLine($"[{f.Severity}] {f.Id}: {f.Title} — {f.Evidence}");
+        }
+
+        findings.Should().NotContain(f => f.Severity == Severity.Error);
+    }
+
+    [Fact]
+    public void Catalog_IsAppliedAndDescribeChanges_AreReadOnly()
+    {
+        var catalog = new TweakCatalog(new ReadOnlyRegistryGuard(new WindowsRegistry()), new ReadOnlyProcessGuard(new ProcessRunner()));
+        foreach (var t in catalog.All)
+        {
+            output.WriteLine($"{t.Id}: aplicado={t.IsApplied()} | {string.Join(" | ", t.DescribeChanges())}");
+        }
+    }
+}

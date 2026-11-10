@@ -62,8 +62,11 @@ public sealed class TweakCatalog
         Priority = 60,
     },
     [
-        RegistrySetting.DWord(RegistryHive.CurrentUser, GameBarKey, "AutoGameModeEnabled", 1),
-        RegistrySetting.DWord(RegistryHive.CurrentUser, GameBarKey, "AllowAutoGameMode", 1),
+        // Valor ausente = padrão do Windows 11 (ligado): conta como já aplicado, evitando escrita inútil (R8).
+        new RegistrySetting(RegistryHive.CurrentUser, GameBarKey, "AutoGameModeEnabled",
+            _ => RegistryValue.FromDWord(1), v => v is null || RegistryValue.FromDWord(1).Equals(v)),
+        new RegistrySetting(RegistryHive.CurrentUser, GameBarKey, "AllowAutoGameMode",
+            _ => RegistryValue.FromDWord(1), v => v is null || RegistryValue.FromDWord(1).Equals(v)),
     ]);
 
     private static RegistryTweak GameDvrOff(IRegistry r) => new(r, new TweakInfo

@@ -27,3 +27,6 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - Fase 4: `power-high` (`PowerPlanTweak`: parsing por GUID em qualquer idioma, fallback `/duplicatescheme`, detecção do plano
   AMD Ryzen Balanced, reversão exata com allowlist e detecção de drift) e `flip-model-upgrade` (preserva as demais flags
   de `DirectXUserGlobalSettings`).
+- Fase 5: `Analyzer` com regras isoladas (`IDiagnosticRule`): `ram-below-rated`, `ram-single-channel`, `ram-capacity-low`,
+  `rebar-unknown`, `vbs-active`, `chipset-driver-missing`, `fast-startup`, `disk-low-space`, `vcache-note`, `gpu-driver-old`;
+  `SystemProfileDetector`; testes de integração somente leitura com guardas que proíbem escrita.
