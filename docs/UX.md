@@ -28,7 +28,9 @@ reversível e o que não é, e funcionar 100% por teclado.
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Jogos** só aparece quando o foco é Jogos ou Os dois.
+- **Jogos** só aparece quando o foco é Jogos, Os dois ou Jogos + live.
+- Foco **Jogos + live (streaming)**: tudo de Jogos, mais a aba **Live** (rede, espaço para gravar, codificador, OBS, como medir)
+  e o cenário "Quedas de quadros na live", que fica desabilitado nos outros focos.
 - **Analisar** nunca altera nada. **Aplicar selecionados** mostra a prévia exata (valor atual → novo) e pede confirmação.
 - **Desfazer tudo** pergunta antes e, se outro programa mudou um valor depois do WinTune, pergunta de novo por item.
 - Barra de status com texto ao vivo (leitor de tela: `LiveSetting=Polite`), progresso e Cancelar (Esc).

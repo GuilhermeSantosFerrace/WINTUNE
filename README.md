@@ -25,17 +25,18 @@ Arquitetura: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Telas: [`docs/UX.
 
 ## Usar
 
-1. **Otimizar:** escolha o foco (Trabalho, Jogos, Os dois), os jogos (Siege/CS2) e os cenários com problema; clique em **Analisar**.
+1. **Otimizar:** escolha o foco (Trabalho, Jogos, Os dois ou Jogos + live), os jogos (Siege/CS2) e os cenários com problema; clique em **Analisar**.
 2. Revise a lista. Itens experimentais (HAGS, flip model) e cosméticos vêm desmarcados; "Já aplicado" significa nada a fazer.
 3. **Aplicar selecionados** mostra a prévia exata (valor atual → novo), cria um ponto de restauração e aplica.
 4. **Diagnóstico / Jogos:** avisos de hardware e guias por jogo (o app não altera BIOS nem arquivos de jogo).
-5. **Telemetria:** monitor ao vivo e "sessão de diagnóstico" que diz qual componente limita (GPU, CPU, RAM, disco, térmico).
-6. **Benchmark:** grave ≥ 3 rodadas antes e ≥ 3 depois (mesmo mapa/cenário), opcionalmente com o CSV do
+5. **Live** (foco Jogos + live): rede, espaço para gravar, codificador e checklist do OBS; nada é alterado no OBS.
+6. **Telemetria:** monitor ao vivo e "sessão de diagnóstico" que diz qual componente limita (GPU, CPU, RAM, disco, térmico).
+7. **Benchmark:** grave ≥ 3 rodadas antes e ≥ 3 depois (mesmo mapa/cenário), opcionalmente com o CSV do
    [PresentMon](https://github.com/GameTechDev/PresentMon), e compare.
-7. **Inicialização / Serviços / Limpeza:** conservadores; itens da Microsoft e de segurança ficam protegidos; a limpeza
+8. **Inicialização / Serviços / Limpeza:** conservadores; itens da Microsoft e de segurança ficam protegidos; a limpeza
    tem prévia obrigatória e **não é reversível**.
-8. **Perfis e modo jogo:** salve seleções; o modo jogo automático (opcional) aplica ajustes ao abrir o jogo e restaura ao fechar.
-9. **Desfazer tudo** restaura o estado original de tudo que o WinTune alterou. **Histórico** mostra cada operação e exporta
+9. **Perfis e modo jogo:** salve seleções; o modo jogo automático (opcional) aplica ajustes ao abrir o jogo e restaura ao fechar.
+10. **Desfazer tudo** restaura o estado original de tudo que o WinTune alterou. **Histórico** mostra cada operação e exporta
    um relatório local (Markdown/JSON) sem dados pessoais.
 
 ## Recuperação

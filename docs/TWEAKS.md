@@ -9,6 +9,9 @@ Convenções:
 - "Padrão do Windows" descreve o comportamento típico de uma instalação limpa; o valor pode estar **ausente** (o Windows usa
   o padrão interno). O WinTune guarda o estado exato encontrado, inclusive "ausente", e restaura exatamente isso.
 - Comandos de recuperação manual devem ser executados em um terminal **como administrador** quando a chave for HKLM.
+- Foco **Jogos + live** recebe todos os ajustes de Jogos (inclusive os de Trabalho+Jogos) e nenhum que seja só de Trabalho.
+  Não há ajuste automático específico de streaming: as recomendações de live ficam na aba **Live** como verificações e guias
+  (nada é alterado no OBS, no jogo ou na rede).
 - Prioridade: tabela estática usada para ordenar a lista (lacuna 4 da seção 10.2). Maior = aparece antes.
 
 ## Tabela de prioridade
@@ -57,7 +60,8 @@ Convenções:
 - **Chaves:** HKCU `System\GameConfigStore` → `GameDVR_Enabled` (DWORD) = `0`;
   HKCU `Software\Microsoft\Windows\CurrentVersion\GameDVR` → `AppCaptureEnabled` (DWORD) = `0`.
 - **Padrão do Windows:** varia; muitas vezes já desligado (R8).
-- **Foco / cenários:** Jogos / Travadas, FPS baixo.
+- **Foco / cenários:** Jogos e Jogos + live / Travadas, FPS baixo, Quedas de quadros na live. Para quem transmite pelo OBS,
+  a gravação em segundo plano da Game Bar pode disputar o codificador de vídeo da GPU com a transmissão.
 - **Risco:** seguro. **Reinício:** não.
 - **Fonte:** Eleven Forum, [Enable or Disable Record What Happened for Gaming Captures](https://www.elevenforum.com/t/enable-or-disable-record-what-happened-for-gaming-in-windows-11.17900/)
   e [Game Mode Issues](https://www.elevenforum.com/t/game-mode-issues.45413/post-721246) (ambos os valores). Confiança: comunidade.

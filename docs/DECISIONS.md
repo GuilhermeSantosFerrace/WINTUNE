@@ -340,3 +340,20 @@ Formato: `D-NNN — título`, com fase, contexto, decisão e consequências.
   Fase 14 exige o roteiro manual de recuperação em VM. Isso não pôde ser executado no ambiente de desenvolvimento.
 - **Decisão:** publicar a tag `v1.0.0-rc.1` (pré-release). A `v1.0.0` deve ser criada depois de concluir o roteiro de
   `docs/SAFETY.md` (seção 5).
+
+## D-037 — Foco "Jogos + live (streaming)"
+
+- **Contexto:** pedido do usuário para otimizar também para livestream.
+- **Decisão:**
+  - Novo foco `Focus.Streaming`, que herda tudo de Jogos (`IncludesGaming()` verdadeiro) e acrescenta a aba **Live**. A regra de
+    foco virou `Focus.Matches`: "Os dois" vale para tudo; "Jogos + live" vale para ajustes de Jogos ou de Streaming.
+  - Novo cenário `Scenario.StreamDrops` ("Quedas de quadros na live"), só considerado nesse foco. Hoje só `gamedvr-off` declara
+    ajudar nele (a gravação da Game Bar disputa o codificador da GPU).
+  - **Nenhum ajuste automático novo.** Configurações de OBS/plataforma não são do Windows e mudam entre versões; pela regra 5
+    do spec, ficam como guia. Prioridade de processo do OBS e afinidade estão fora de escopo (seção 1.4).
+  - Verificações somente leitura (`StreamingChecks`): adaptador de rede conectado (Wi-Fi × cabo, velocidade negociada, por WMI
+    `Win32_NetworkAdapter`, ignorando adaptadores virtuais/Bluetooth), espaço para gravar (< 50 GB), escolha do codificador
+    (NVENC/AMF/Quick Sync), checklist do OBS e como medir. **Upload não é medido**: exigiria tráfego de rede (D-034).
+  - Telemetria: uso do codificador de vídeo da GPU (NVML `nvmlDeviceGetEncoderUtilization`; alternativa PDH
+    `GPU Engine(*engtype_VideoEncode)`). O classificador emite `streaming-encoder-saturated` quando ≥ 90% em 30% da sessão,
+    sem mudar o gargalo principal.

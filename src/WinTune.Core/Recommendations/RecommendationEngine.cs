@@ -26,7 +26,7 @@ public sealed class RecommendationEngine
     public static bool IsRecommended(Tweak tweak, Focus focus, Scenario scenarios, GameTarget games)
     {
         ArgumentNullException.ThrowIfNull(tweak);
-        var focusOk = focus == Focus.Both || tweak.For.Contains(focus);
+        var focusOk = focus.Matches(tweak.For);
         var scenarioOk = scenarios == Scenario.None || tweak.Helps == Scenario.None || (tweak.Helps & scenarios) != 0;
         var gameOk = !focus.IncludesGaming() || games == GameTarget.None || tweak.Games == GameTarget.None || (tweak.Games & games) != 0;
         return focusOk && scenarioOk && gameOk;

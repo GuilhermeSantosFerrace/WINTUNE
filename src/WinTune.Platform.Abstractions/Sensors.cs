@@ -18,6 +18,9 @@ public sealed record SensorReading
     /// <summary>Uso da GPU (%).</summary>
     public double? GpuUtilizationPercent { get; init; }
 
+    /// <summary>Uso do codificador de vídeo da GPU (%), relevante em livestream/gravação.</summary>
+    public double? GpuEncoderPercent { get; init; }
+
     /// <summary>Temperatura da GPU (°C).</summary>
     public double? GpuTemperatureC { get; init; }
 

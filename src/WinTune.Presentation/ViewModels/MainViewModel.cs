@@ -39,9 +39,11 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             new(Scenario.SlowBoot, "Boot lento"),
             new(Scenario.HighTemperature, "Temperatura alta"),
             new(Scenario.LongLoading, "Carregamentos longos"),
+            new(Scenario.StreamDrops, "Quedas de quadros na live") { StreamingOnly = true },
         ];
         foreach (var s in Scenarios)
         {
+            s.IsAvailable = !s.StreamingOnly || SelectedFocus.IncludesStreaming();
             s.PropertyChanged += (_, _) => _ = RefreshRecommendationsAsync();
         }
 
@@ -151,13 +153,15 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<FindingItemViewModel> GameFindings { get; } = [];
 
+    public ObservableCollection<FindingItemViewModel> StreamingFindings { get; } = [];
+
     public ObservableCollection<string> Log { get; } = [];
 
     /// <summary>Perfil de hardware (após Analisar).</summary>
     public SystemProfile Profile { get; private set; } = SystemProfile.Unknown;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsGamesSectionVisible), nameof(IsWorkFocus), nameof(IsGamingFocus), nameof(IsBothFocus))]
+    [NotifyPropertyChangedFor(nameof(IsGamesSectionVisible), nameof(IsWorkFocus), nameof(IsGamingFocus), nameof(IsBothFocus), nameof(IsStreamingFocus))]
     private Focus _selectedFocus = Focus.Gaming;
 
     [ObservableProperty]
@@ -211,6 +215,18 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool IsStreamingFocus
+    {
+        get => SelectedFocus == Focus.Streaming;
+        set
+        {
+            if (value)
+            {
+                SelectedFocus = Focus.Streaming;
+            }
+        }
+    }
+
     public bool IsBothFocus
     {
         get => SelectedFocus == Focus.Both;
@@ -224,7 +240,8 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     }
 
     /// <summary>Cenários marcados.</summary>
-    public Scenario SelectedScenarios => Scenarios.Where(s => s.IsChecked).Aggregate(Scenario.None, (acc, s) => acc | s.Scenario);
+    public Scenario SelectedScenarios =>
+        Scenarios.Where(s => s.IsChecked && (!s.StreamingOnly || SelectedFocus.IncludesStreaming())).Aggregate(Scenario.None, (acc, s) => acc | s.Scenario);
 
     /// <summary>Jogos marcados (None se o foco não inclui Jogos).</summary>
     public GameTarget SelectedGames =>
@@ -232,7 +249,15 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             ? GameTarget.None
             : (SiegeSelected ? GameTarget.RainbowSixSiege : GameTarget.None) | (Cs2Selected ? GameTarget.Cs2 : GameTarget.None);
 
-    partial void OnSelectedFocusChanged(Focus value) => _ = RefreshRecommendationsAsync();
+    partial void OnSelectedFocusChanged(Focus value)
+    {
+        foreach (var s in Scenarios)
+        {
+            s.IsAvailable = !s.StreamingOnly || value.IncludesStreaming();
+        }
+
+        _ = RefreshRecommendationsAsync();
+    }
 
     partial void OnSiegeSelectedChanged(bool value) => _ = RefreshRecommendationsAsync();
 
@@ -274,7 +299,8 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         try
         {
             var games = SelectedGames;
-            var (profile, system, game) = await Task.Run(() =>
+            var streaming = SelectedFocus.IncludesStreaming();
+            var (profile, system, game, live) = await Task.Run(() =>
             {
                 var p = SystemProfileDetector.Detect(_services.Wmi, _services.Runner, _services.Environment);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -283,17 +309,19 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 var gm = SelectedFocus.IncludesGaming()
                     ? new Analyzer(GameChecks.Rules(_services.Games, games)).Run(ctx, cancellationToken)
                     : [];
-                return (p, sys, gm);
+                var lv = streaming ? new Analyzer(StreamingChecks.Rules()).Run(ctx, cancellationToken) : [];
+                return (p, sys, gm, lv);
             }, cancellationToken).ConfigureAwait(true);
 
             Profile = profile;
             Replace(SystemFindings, system.Select(f => new FindingItemViewModel(f)));
             Replace(GameFindings, game.Select(f => new FindingItemViewModel(f)));
+            Replace(StreamingFindings, live.Select(f => new FindingItemViewModel(f)));
             Progress = 50;
             await RefreshRecommendationsAsync().ConfigureAwait(true);
             HasAnalyzed = true;
             Progress = 100;
-            StatusMessage = $"Análise concluída: {Recommendations.Count} ajuste(s) recomendado(s), {SystemFindings.Count + GameFindings.Count} aviso(s).";
+            StatusMessage = $"Análise concluída: {Recommendations.Count} ajuste(s) recomendado(s), {SystemFindings.Count + GameFindings.Count + StreamingFindings.Count} aviso(s).";
             AddLog(StatusMessage);
         }
         catch (OperationCanceledException)

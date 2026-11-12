@@ -55,6 +55,7 @@
                   <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Work}" IsChecked="{Binding IsWorkFocus}" AutomationProperties.Name="Foco: Trabalho" />
                   <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Gaming}" IsChecked="{Binding IsGamingFocus}" AutomationProperties.Name="Foco: Jogos" />
                   <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Both}" IsChecked="{Binding IsBothFocus}" AutomationProperties.Name="Foco: Os dois" />
+                  <RadioButton GroupName="Focus" Content="{DynamicResource Str.Focus.Streaming}" IsChecked="{Binding IsStreamingFocus}" AutomationProperties.Name="Foco: Jogos e livestream" />
                 </StackPanel>
               </GroupBox>
 
@@ -71,7 +72,7 @@
                 <ItemsControl ItemsSource="{Binding Scenarios}" IsTabStop="False">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ScenarioOption}">
-                      <CheckBox Content="{Binding Label}" IsChecked="{Binding IsChecked}" AutomationProperties.Name="{Binding Label}" />
+                      <CheckBox Content="{Binding Label}" IsChecked="{Binding IsChecked}" IsEnabled="{Binding IsAvailable}" AutomationProperties.Name="{Binding Label}" />
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -146,6 +147,17 @@
           <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Games.Intro}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
           <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding GameFindings}" ItemTemplate="{StaticResource FindingTemplate}" />
+          </ScrollViewer>
+        </DockPanel>
+      </TabItem>
+
+      <!-- ====================== Live ====================== -->
+      <TabItem Header="{DynamicResource Str.Tab.Live}" AutomationProperties.Name="Live (streaming)">
+        <DockPanel Margin="12">
+          <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Live.Intro}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+          <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Str.Live.Empty}" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding StreamingFindings}" ItemTemplate="{StaticResource FindingTemplate}" />
           </ScrollViewer>
         </DockPanel>
       </TabItem>

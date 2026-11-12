@@ -65,6 +65,10 @@ public class RecommendationTests
         { Focus.Gaming, Scenario.None, GameTarget.RainbowSixSiege | GameTarget.Cs2, ["gaming-stutter", "both-boot", "siege-only", "cs2-only"] },
         { Focus.Both, Scenario.None, GameTarget.Cs2, ["gaming-stutter", "work-any", "both-boot", "cs2-only"] },
 
+        // Jogos + live: tudo de Jogos (inclusive ajustes de Trabalho+Jogos), nada só de Trabalho
+        { Focus.Streaming, Scenario.None, GameTarget.None, ["gaming-stutter", "both-boot", "siege-only", "cs2-only"] },
+        { Focus.Streaming, Scenario.Stutter, GameTarget.Cs2, ["gaming-stutter", "cs2-only"] },
+
         // Foco Trabalho ignora jogos
         { Focus.Work, Scenario.None, GameTarget.RainbowSixSiege, ["work-any", "both-boot"] },
         { Focus.Work, Scenario.None, GameTarget.Cs2, ["work-any", "both-boot"] },

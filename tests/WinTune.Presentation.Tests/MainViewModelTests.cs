@@ -14,10 +14,50 @@ public class MainViewModelTests
     [InlineData(Focus.Work, false)]
     [InlineData(Focus.Gaming, true)]
     [InlineData(Focus.Both, true)]
+    [InlineData(Focus.Streaming, true)]
     public void GamesSection_VisibleOnlyWhenFocusIncludesGaming(Focus focus, bool visible)
     {
         var vm = new MainViewModel(new TestWorld().Services, new FakeDialogs()) { SelectedFocus = focus };
         vm.IsGamesSectionVisible.Should().Be(visible);
+    }
+
+    [Fact]
+    public void StreamDropsScenario_OnlyAvailableAndEffectiveInStreamingFocus()
+    {
+        var vm = new MainViewModel(new TestWorld().Services, new FakeDialogs());
+        var drops = vm.Scenarios.Single(s => s.Scenario == Scenario.StreamDrops);
+        drops.IsChecked = true;
+
+        drops.IsAvailable.Should().BeFalse();
+        vm.SelectedScenarios.Should().Be(Scenario.None, "fora do foco Jogos + live a opção é ignorada");
+
+        vm.IsStreamingFocus = true;
+        drops.IsAvailable.Should().BeTrue();
+        vm.SelectedScenarios.Should().Be(Scenario.StreamDrops);
+        vm.IsGamingFocus.Should().BeFalse();
+
+        vm.IsGamingFocus = true;
+        drops.IsAvailable.Should().BeFalse();
+        vm.SelectedScenarios.Should().Be(Scenario.None);
+    }
+
+    [Fact]
+    public async Task Analyze_InStreamingFocus_FillsLiveFindings_OtherFociDoNot()
+    {
+        var world = new TestWorld();
+        var vm = new MainViewModel(world.Services, new FakeDialogs()) { SelectedFocus = Focus.Gaming };
+        await vm.AnalyzeCommand.ExecuteAsync(null);
+        vm.StreamingFindings.Should().BeEmpty();
+
+        vm.IsStreamingFocus = true;
+        await vm.AnalyzeCommand.ExecuteAsync(null);
+
+        vm.StreamingFindings.Should().Contain(f => f.Finding.Id == "streaming-guide-obs");
+        vm.GameFindings.Should().NotBeEmpty("o foco Jogos + live também faz as verificações de jogos");
+
+        vm.IsWorkFocus = true;
+        await vm.AnalyzeCommand.ExecuteAsync(null);
+        vm.StreamingFindings.Should().BeEmpty();
     }
 
     [Fact]

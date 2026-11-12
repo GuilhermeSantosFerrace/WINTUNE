@@ -296,6 +296,7 @@ public sealed partial class TelemetryViewModel : ObservableObject, IDisposable
         CpuText = $"CPU: {P(r.CpuTotalPercent)} (thread mais ocupada {P(r.CpuMaxThreadPercent)}) · {Mhz(r.CpuEffectiveClockMhz)}" +
                   (r.CpuTemperatureC is null ? string.Empty : $" · zona térmica {r.CpuTemperatureC.Value.ToString("0", PtBr)} °C");
         GpuText = $"GPU: {P(r.GpuUtilizationPercent)} · {Mhz(r.GpuClockMhz)}" +
+                  (r.GpuEncoderPercent is null ? string.Empty : $" · codificador {P(r.GpuEncoderPercent)}") +
                   (r.GpuTemperatureC is null ? string.Empty : $" · {r.GpuTemperatureC.Value.ToString("0", PtBr)} °C") +
                   (r.GpuMemoryUsedMb is null ? string.Empty : $" · VRAM {r.GpuMemoryUsedMb.Value.ToString("0", PtBr)}/{r.GpuMemoryTotalMb?.ToString("0", PtBr)} MB");
         RamText = $"RAM: {P(r.RamUsedPercent)} em uso · {(r.RamAvailableMb is null ? "—" : r.RamAvailableMb.Value.ToString("0", PtBr) + " MB livres")} · paginação {(r.PagesPerSecond is null ? "—" : r.PagesPerSecond.Value.ToString("0", PtBr) + "/s")}";

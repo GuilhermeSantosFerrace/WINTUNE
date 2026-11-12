@@ -74,9 +74,10 @@ public sealed class TweakCatalog
         Id = "gamedvr-off",
         Name = "Desligar gravação em segundo plano (Game DVR)",
         Description = "Desliga a captura contínua em segundo plano da Xbox Game Bar, que codifica vídeo o tempo todo e pode custar " +
-                      "desempenho. Capturas manuais (Win+Alt+PrtScn) continuam disponíveis se você religar pela Game Bar.",
-        For = [Focus.Gaming],
-        Helps = Scenario.Stutter | Scenario.LowFps,
+                      "desempenho. Capturas manuais (Win+Alt+PrtScn) continuam disponíveis se você religar pela Game Bar. " +
+                      "Quem faz live com o OBS já grava/transmite por ele: a gravação da Game Bar pode disputar o codificador da GPU com a transmissão.",
+        For = [Focus.Gaming, Focus.Streaming],
+        Helps = Scenario.Stutter | Scenario.LowFps | Scenario.StreamDrops,
         Priority = 70,
     },
     [

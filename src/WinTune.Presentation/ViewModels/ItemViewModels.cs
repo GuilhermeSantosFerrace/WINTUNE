@@ -31,8 +31,15 @@ public sealed partial class ScenarioOption : ObservableObject
 
     public string Label { get; }
 
+    /// <summary>Opção que só vale no foco "Jogos + live".</summary>
+    public bool StreamingOnly { get; init; }
+
     [ObservableProperty]
     private bool _isChecked;
+
+    /// <summary>Habilitada para o foco atual.</summary>
+    [ObservableProperty]
+    private bool _isAvailable = true;
 }
 
 /// <summary>Linha da lista de ajustes recomendados.</summary>

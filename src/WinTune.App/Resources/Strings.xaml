@@ -8,6 +8,7 @@
   <sys:String x:Key="Str.Tab.Optimize">_Otimizar</sys:String>
   <sys:String x:Key="Str.Tab.Diagnostics">_Diagnóstico</sys:String>
   <sys:String x:Key="Str.Tab.Games">_Jogos</sys:String>
+  <sys:String x:Key="Str.Tab.Live">Li_ve</sys:String>
   <sys:String x:Key="Str.Tab.Telemetry">_Telemetria</sys:String>
   <sys:String x:Key="Str.Tab.Startup">_Inicialização</sys:String>
   <sys:String x:Key="Str.Tab.Cleanup">_Limpeza</sys:String>
@@ -21,6 +22,7 @@
   <sys:String x:Key="Str.Focus.Work">_Trabalho</sys:String>
   <sys:String x:Key="Str.Focus.Gaming">_Jogos</sys:String>
   <sys:String x:Key="Str.Focus.Both">_Os dois</sys:String>
+  <sys:String x:Key="Str.Focus.Streaming">Jogos + li_ve (streaming)</sys:String>
   <sys:String x:Key="Str.Games">Jogos a otimizar</sys:String>
   <sys:String x:Key="Str.Games.Siege">Rainbow Six _Siege</sys:String>
   <sys:String x:Key="Str.Games.Cs2">Counter-Strike _2</sys:String>
@@ -39,5 +41,7 @@
   <sys:String x:Key="Str.Evidence">Evidência:</sys:String>
   <sys:String x:Key="Str.Diagnostics.Intro">Avisos sobre hardware e configuração. O WinTune só informa: nada aqui é alterado automaticamente.</sys:String>
   <sys:String x:Key="Str.Games.Intro">Verificações e guias para os jogos escolhidos. O WinTune nunca toca no processo nem nos arquivos dos jogos (anti-cheat).</sys:String>
+  <sys:String x:Key="Str.Live.Intro">Verificações e guias para transmitir e gravar enquanto joga. O WinTune não altera o OBS nem o jogo e não mede upload (isso exigiria tráfego de rede).</sys:String>
+  <sys:String x:Key="Str.Live.Empty">Escolha o foco "Jogos + live" e clique em Analisar para ver os resultados. Para saber se o codificador da GPU aguenta, rode uma sessão de diagnóstico na aba Telemetria com o OBS transmitindo.</sys:String>
   <sys:String x:Key="Str.Privacy">Tudo fica neste PC: o WinTune não envia dados pela rede.</sys:String>
 </ResourceDictionary>

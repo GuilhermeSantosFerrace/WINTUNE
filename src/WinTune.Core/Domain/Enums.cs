@@ -9,8 +9,11 @@ public enum Focus
     /// <summary>Jogos.</summary>
     Gaming,
 
-    /// <summary>Os dois.</summary>
+    /// <summary>Os dois (Trabalho e Jogos).</summary>
     Both,
+
+    /// <summary>Jogos e livestreaming: tudo do foco Jogos mais verificações e guias de transmissão.</summary>
+    Streaming,
 }
 
 /// <summary>Cenários com problema marcados pelo usuário.</summary>
@@ -37,6 +40,9 @@ public enum Scenario
 
     /// <summary>Carregamentos longos.</summary>
     LongLoading = 32,
+
+    /// <summary>Quedas de quadros ou travadas na transmissão ao vivo (só vale no foco Jogos + live).</summary>
+    StreamDrops = 64,
 }
 
 /// <summary>Jogos-alvo (seção 4.3).</summary>
@@ -96,7 +102,25 @@ public enum RevertMode
 public static class DomainExtensions
 {
     /// <summary>Indica se o foco inclui jogos.</summary>
-    public static bool IncludesGaming(this Focus focus) => focus is Focus.Gaming or Focus.Both;
+    public static bool IncludesGaming(this Focus focus) => focus is Focus.Gaming or Focus.Both or Focus.Streaming;
+
+    /// <summary>Indica se o foco inclui livestreaming.</summary>
+    public static bool IncludesStreaming(this Focus focus) => focus == Focus.Streaming;
+
+    /// <summary>
+    /// Indica se um ajuste declarado para <paramref name="tweakFoci"/> vale neste foco. "Os dois" vale para tudo;
+    /// "Jogos + live" vale para ajustes de Jogos e de Streaming.
+    /// </summary>
+    public static bool Matches(this Focus focus, IReadOnlyCollection<Focus> tweakFoci)
+    {
+        ArgumentNullException.ThrowIfNull(tweakFoci);
+        return focus switch
+        {
+            Focus.Both => true,
+            Focus.Streaming => tweakFoci.Contains(Focus.Gaming) || tweakFoci.Contains(Focus.Streaming),
+            _ => tweakFoci.Contains(focus),
+        };
+    }
 
     /// <summary>Nome curto do jogo usado em rótulos de sessão (<c>siege</c>, <c>cs2</c>).</summary>
     public static string ToLabel(this GameTarget game) => game switch

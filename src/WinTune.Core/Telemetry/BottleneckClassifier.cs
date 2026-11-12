@@ -85,6 +85,18 @@ public sealed class BottleneckClassifier
             findings.Add(thermal);
         }
 
+        // Livestream/gravação: codificador de vídeo da GPU saturado derruba quadros na transmissão mesmo que o jogo esteja bem.
+        var encoder = Frac(x => x.GpuEncoderPercent >= 90);
+        Add(evidence, "Codificador de vídeo da GPU ≥ 90%", encoder);
+        if (encoder >= 0.3)
+        {
+            findings.Add(new Finding("streaming-encoder-saturated", "Codificador de vídeo da GPU saturado",
+                "O codificador (NVENC ou equivalente) passou boa parte da sessão perto do limite. Na live isso causa quadros perdidos ou " +
+                "travadas na transmissão. Reduza a resolução ou o FPS da saída, use um preset de codificação mais leve no OBS ou " +
+                "desligue gravações paralelas (inclusive a da Xbox Game Bar).",
+                Severity.Warning, string.Create(PtBr, $"Codificador ≥ 90% em {encoder:P0} do tempo")));
+        }
+
         Bottleneck primary;
         if (ram >= 0.3)
         {

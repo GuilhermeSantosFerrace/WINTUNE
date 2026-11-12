@@ -8,6 +8,9 @@ public enum FindingCategory
 
     /// <summary>Verificação ou guia específico de jogo (aba Jogos).</summary>
     Game,
+
+    /// <summary>Verificação ou guia de livestreaming (aba Live).</summary>
+    Streaming,
 }
 
 /// <summary>Achado do diagnóstico (somente aviso; nunca altera o sistema).</summary>

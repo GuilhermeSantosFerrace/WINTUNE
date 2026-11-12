@@ -99,7 +99,7 @@ public sealed partial class HistoryViewModel : ObservableObject
             return;
         }
 
-        var findings = _main.SystemFindings.Concat(_main.GameFindings).Select(f => f.Finding).ToList();
+        var findings = _main.SystemFindings.Concat(_main.GameFindings).Concat(_main.StreamingFindings).Select(f => f.Finding).ToList();
         var profile = _main.Profile;
         var text = await Task.Run(() =>
         {

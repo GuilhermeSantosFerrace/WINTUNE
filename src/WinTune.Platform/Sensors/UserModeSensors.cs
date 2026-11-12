@@ -16,6 +16,7 @@ public sealed class UserModeSensors : IHardwareSensors
     private const string PagesSec = @"\Memory\Pages/sec";
     private const string DiskIdle = @"\PhysicalDisk(_Total)\% Idle Time";
     private const string Gpu3d = @"\GPU Engine(*engtype_3D)\Utilization Percentage";
+    private const string GpuEncode = @"\GPU Engine(*engtype_VideoEncode)\Utilization Percentage";
 
     private readonly PdhQuery? _pdh;
     private readonly Nvml? _nvml;
@@ -85,6 +86,13 @@ public sealed class UserModeSensors : IHardwareSensors
             gpuGeneric = engines.Count == 0 ? null : Clamp(engines.Sum(e => e.Value));
         }
 
+        double? encoderGeneric = null;
+        if (_pdh?.Has(GpuEncode) == true)
+        {
+            var enc = _pdh.Array(GpuEncode);
+            encoderGeneric = enc.Count == 0 ? null : Clamp(enc.Sum(e => e.Value));
+        }
+
         // Zona térmica ACPI via WMI: leitura a cada 5 amostras para manter o custo baixo.
         if (_reads % 5 == 1)
         {
@@ -104,6 +112,7 @@ public sealed class UserModeSensors : IHardwareSensors
             CpuEffectiveClockMhz = perf is null || _baseClockMhz is null ? null : Math.Round(perf.Value * _baseClockMhz.Value / 100.0),
             CpuTemperatureC = _lastCpuTemp,
             GpuUtilizationPercent = _nvml?.Utilization ?? gpuGeneric,
+            GpuEncoderPercent = _nvml?.EncoderUtilization ?? encoderGeneric,
             GpuTemperatureC = _nvml?.TemperatureC,
             GpuClockMhz = _nvml?.GraphicsClockMhz,
             GpuMemoryUsedMb = memory?.UsedMb,

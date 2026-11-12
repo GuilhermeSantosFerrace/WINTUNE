@@ -9,6 +9,10 @@ e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- Foco **Jogos + live (streaming)**: herda os ajustes de Jogos, adiciona o cenário "Quedas de quadros na live" e a aba **Live**
+  (Wi-Fi × cabo, espaço para gravar, codificador NVENC/AMF/Quick Sync, checklist do OBS, como medir). Telemetria passa a mostrar o
+  uso do codificador de vídeo da GPU e avisa quando ele satura.
+
 - `docs/DEVELOPMENT.md`: guia de pré-requisitos, execução local, comandos de build/teste/publicação, dados do app, editor,
   regras de qualidade, CI/release e problemas comuns.
 - `build.ps1`: alvos `integration`, `format` e `coverage`.

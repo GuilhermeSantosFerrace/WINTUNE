@@ -14,9 +14,10 @@ internal sealed class Nvml : IDisposable
     private readonly GetTemperature? _getTemperature;
     private readonly GetClock? _getClock;
     private readonly GetMemory? _getMemory;
+    private readonly GetEncoderUtilization? _getEncoder;
     private readonly Shutdown? _shutdown;
 
-    private Nvml(IntPtr lib, IntPtr device, GetUtilization? u, GetTemperature? t, GetClock? c, GetMemory? m, Shutdown? s)
+    private Nvml(IntPtr lib, IntPtr device, GetUtilization? u, GetTemperature? t, GetClock? c, GetMemory? m, GetEncoderUtilization? e, Shutdown? s)
     {
         _lib = lib;
         _device = device;
@@ -24,6 +25,7 @@ internal sealed class Nvml : IDisposable
         _getTemperature = t;
         _getClock = c;
         _getMemory = m;
+        _getEncoder = e;
         _shutdown = s;
     }
 
@@ -47,6 +49,9 @@ internal sealed class Nvml : IDisposable
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private delegate int GetMemory(IntPtr device, out NvmlMemory memory);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    private delegate int GetEncoderUtilization(IntPtr device, out uint utilization, out uint samplingPeriodUs);
 
     /// <summary>Tenta carregar a NVML; retorna null com o motivo se indisponível.</summary>
     public static Nvml? TryOpen(out string? reason)
@@ -73,6 +78,7 @@ internal sealed class Nvml : IDisposable
             Get<GetTemperature>(lib, "nvmlDeviceGetTemperature"),
             Get<GetClock>(lib, "nvmlDeviceGetClockInfo"),
             Get<GetMemory>(lib, "nvmlDeviceGetMemoryInfo"),
+            Get<GetEncoderUtilization>(lib, "nvmlDeviceGetEncoderUtilization"),
             Get<Shutdown>(lib, "nvmlShutdown"));
     }
 
@@ -81,6 +87,8 @@ internal sealed class Nvml : IDisposable
     public double? TemperatureC => _getTemperature is not null && _getTemperature(_device, 0, out var t) == 0 ? t : null;
 
     public double? GraphicsClockMhz => _getClock is not null && _getClock(_device, 0, out var c) == 0 ? c : null;
+
+    public double? EncoderUtilization => _getEncoder is not null && _getEncoder(_device, out var u, out _) == 0 ? u : null;
 
     public (double UsedMb, double TotalMb)? Memory =>
         _getMemory is not null && _getMemory(_device, out var m) == 0 ? (m.Used / 1048576.0, m.Total / 1048576.0) : null;
